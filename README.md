@@ -1,5 +1,5 @@
-# Game Template
-Roblox game template used for quickly setting up a Rojo workflow suited for game development.
+# Site 74
+Site 74 is a next-generation SCP roleplay game under active development.
 
 # Configuration
 ## Toolchain

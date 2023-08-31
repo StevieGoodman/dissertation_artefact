@@ -1,6 +1,6 @@
 [package]
-name        = "steviegoodman/unnamed-project"
-description = "No description provided."
+name        = "steviegoodman/site-74"
+description = "Next generation SCP roleplay game under active development."
 version     = "1.0.0"
 registry    = "https://github.com/UpliftGames/wally-index"
 realm       = "shared"
