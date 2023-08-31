@@ -1,0 +1,30 @@
+{
+    "name": "Unnamed Project",
+
+    "tree": {
+        "$className": "DataModel",
+
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+
+            "Packages": {
+                "$path": "Packages"
+            },
+            "Modules": {
+                "$path": "src/Modules"
+            }
+        },
+        "ServerScriptService": {
+            "$className": "ServerScriptService",
+            "$path": "src/ServerScriptService"
+        },
+        "StarterPlayer": {
+            "$className": "StarterPlayer",
+            
+            "StarterPlayerScripts": {
+                "$className": "StarterPlayerScripts",
+                "$path": "src/StarterPlayer/StarterPlayerScripts"
+            }
+        }
+    }
+}
