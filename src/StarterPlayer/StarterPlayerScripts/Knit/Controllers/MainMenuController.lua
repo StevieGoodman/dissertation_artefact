@@ -1,114 +1,109 @@
---------------- ╭──────────╮ ---------------
---------------- │ SERVICES │ ---------------
---------------- ╰──────────╯ ---------------
-local CONTEXT_ACTION_SERV = game:GetService("ContextActionService")
-local PLAYERS             = game:GetService("Players")
-local REPL_STORE          = game:GetService("ReplicatedStorage")
+local ContextActionService = game:GetService("ContextActionService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
---------------- ╭──────────╮ ---------------
---------------- │ PACKAGES │ ---------------
---------------- ╰──────────╯ ---------------
-local KNIT      = require(REPL_STORE.Packages.Knit)
-local OBSERVERS = require(REPL_STORE.Packages.Observers)
-local WAIT_FOR  = require(REPL_STORE.Packages.WaitFor)
+local Knit = require(ReplicatedStorage.Packages.Knit)
+local Observers = require(ReplicatedStorage.Packages.Observers)
+local Waiter = require(ReplicatedStorage.Packages.Waiter)
 
--------------- ╭───────────╮ ---------------
--------------- │ CONSTANTS │ ---------------
--------------- ╰───────────╯ ---------------
 local KEYBIND_KEY           = Enum.KeyCode.M
 local KEYBIND_HOLD_DURATION = 1
 
--------------- ╭───────────╮ ---------------
--------------- │ FUNCTIONS │ ---------------
--------------- ╰───────────╯ ---------------
-function SpawnPlr(self, team: Team)
-    self.RespawnService:Respawn(team)
+local controller = Knit.CreateController {
+    Name = "MainMenu"
+}
+
+function controller:spawnPlayer(team: Team)
+    self.respawnService:respawn(team)
     :andThen(print)
     :andThen(function()
-        self.Plr.PlayerGui.MainMenu:Destroy()
+        self.player.PlayerGui.MainMenu:Destroy()
     end)
     :catch(warn)
 end
 
-function ShowMainMenu(self, menu)
-    WAIT_FOR.Descendants(
+function controller:showMainMenu(menu)
+    menu.Parent = self.player.PlayerGui
+    local buttons = Waiter.waitCollect.descendants(
         menu,
-        { "ClassD", "Security", "Research" },
+        {
+            ClassDPersonnel = { name = "ClassDPersonnel", className = "TextButton" },
+            ResearchDepartment = { name = "ResearchDepartment", className = "TextButton" },
+            SecurityDepartment = { name = "SecurityDepartment", className = "TextButton" },
+            MedicalDepartment = { name = "MedicalDepartment", className = "TextButton" },
+        },
         1
     )
-    :andThen(function(buttons)
+    if buttons then
         for _, button in buttons do
-            local team = button.Team.Value :: Team
+            local team = button.ButtonPlayTeam.Value :: Team
             button.MouseButton1Down:Connect(function()
-                SpawnPlr(self, team)
+                self:spawnPlayer(team)
             end)
         end
-        menu.Parent = self.Plr.PlayerGui
-    end)
-    :catch(function(err)
-        warn(`Unable to find main menu buttons: {err}`)
-    end)
-end
-
-function GetMainMenu(self)
-    self.AssetService:GetAsset("MainMenu")
-    :andThen(function(menu)
-        ShowMainMenu(self, menu)
-    end)
-    :catch(function(_)
-        self.Plr:Kick(
-            [[Unable to display main menu. 
-            Either the game is broken, or your internet connection is poor.
-            Please contact CyroStorms if this issue persists.]])
-    end)
-end
-
-function OnMainMenuKeybind(self, inputObject: InputObject)
-    if inputObject.UserInputState == Enum.UserInputState.Begin then
-        task.wait(KEYBIND_HOLD_DURATION)
-        if inputObject.UserInputState == Enum.UserInputState.Begin then
-            GetMainMenu(self)
-        end
+    else
+        error("Unable to find main menu buttons")
     end
 end
 
-function WaitForMainMenuKeybind(self, player: Players)
+function controller:getMainMenu()
+    self.assetService:getAsset("MainMenu")
+    :andThen(function(mainMenu)
+        if mainMenu then
+            self:showMainMenu(mainMenu)
+        else
+            self.player:Kick([[Unable to get main menu. 
+                Either the game is broken, or your internet connection is poor.
+                Please contact ithacaTheEnby if this issue persists.]])
+        end
+    end)
+    :catch(function(err)
+        self.player:Kick([[Unable to get main menu. 
+        Either the game is broken, or your internet connection is poor.
+        Please contact ithacaTheEnby if this issue persists.]])
+        error(err)
+    end)
+end
+
+function controller:onMainMenuKeybind(inputObject: InputObject)
+    if inputObject.UserInputState ~= Enum.UserInputState.Begin then
+        return
+    end
+    task.wait(KEYBIND_HOLD_DURATION)
+    if inputObject.UserInputState ~= Enum.UserInputState.Begin then
+        return
+    end
+    self:getMainMenu()
+end
+
+function controller:waitForMainMenuKeybind(player: Players)
     if player ~= self.Plr then
         return
     end
-    CONTEXT_ACTION_SERV:BindAction(
+    ContextActionService:BindAction(
         "EnterMainMenu",
         function(_, _, inputObject: InputObject)
-            OnMainMenuKeybind(self, inputObject)
+            self:onMainMenuKeybind(inputObject)
         end,
         false,
         KEYBIND_KEY
     )
     return function()
-        CONTEXT_ACTION_SERV:UnbindAction("EnterMainMenu")
+        ContextActionService:UnbindAction("EnterMainMenu")
     end
 end
 
-function KnitInit(self)
-    self.AssetService   = KNIT.GetService("Asset")
-    self.RespawnService = KNIT.GetService("Respawn")
-    self.Plr            = PLAYERS.LocalPlayer
+function controller:KnitInit()
+    self.assetService = Knit.GetService("Asset")
+    self.respawnService = Knit.GetService("Respawn")
+    self.player = Players.LocalPlayer
 end
 
-function KnitStart(self)
-    GetMainMenu(self)
-    OBSERVERS.observeCharacter(function(player: Player)
-        WaitForMainMenuKeybind(self, player)
+function controller:KnitStart()
+    self:getMainMenu()
+    Observers.observeCharacter(function(player: Player)
+        self:waitForMainMenuKeybind(player)
     end)
 end
-
------------- ╭────────────────╮ ------------
------------- │ INITIALISATION │ ------------
------------- ╰────────────────╯ ------------
-local controller = KNIT.CreateController {
-    Name      = "MainMenu",
-    KnitInit  = KnitInit,
-    KnitStart = KnitStart,
-}
 
 return controller

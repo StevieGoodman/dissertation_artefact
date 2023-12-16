@@ -1,17 +1,8 @@
---------------- ╭──────────╮ ---------------
---------------- │ SERVICES │ ---------------
---------------- ╰──────────╯ ---------------
-local REPL_STORE = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
---------------- ╭──────────╮ ---------------
---------------- │ PACKAGES │ ---------------
---------------- ╰──────────╯ ---------------
-local KNIT = require(REPL_STORE.Packages.Knit)
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
--------------- ╭───────────╮ ---------------
--------------- │ FUNCTIONS │ ---------------
--------------- ╰───────────╯ ---------------
-function Respawn(_, player: Player, as: Team?)
+function respawn(_, player: Player, as: Team?)
     if as then
         player.Team = as
     end
@@ -19,21 +10,18 @@ function Respawn(_, player: Player, as: Team?)
     return `Successfully respawned {player} as a member of {as}!`
 end
 
-function RespawnClient(self, player: Player, as: Team?)
+function respawnClient(self, player: Player, as: Team?)
     if player.Character then
         error(`Cannot respawn {player}: Character is spawned in`)
     end
-    return Respawn(self, player, as)
+    return respawn(self, player, as)
 end
 
------------- ╭────────────────╮ ------------
------------- │ INITIALISATION │ ------------
------------- ╰────────────────╯ ------------
-local service = KNIT.CreateService {
+local service = Knit.CreateService {
     Name    = "Respawn",
-    Respawn = Respawn,
+    Respawn = respawn,
     Client  = {
-        Respawn = RespawnClient,
+        respawn = respawnClient,
     },
 }
 

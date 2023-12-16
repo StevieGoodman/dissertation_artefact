@@ -1,15 +1,9 @@
--------------- ╭───────────╮ ---------------
--------------- │ FUNCTIONS │ ---------------
--------------- ╰───────────╯ ---------------
-function Hook(context)
+function hook(context)
     -- TODO: Add permissions system.
 end
 
-function Register(registry)
-    registry:RegisterHook("BeforeRun", Hook)
+function register(registry)
+    registry:RegisterHook("BeforeRun", hook)
 end
 
------------- ╭────────────────╮ ------------
------------- │ INITIALISATION │ ------------
------------- ╰────────────────╯ ------------
-return Register
+return register

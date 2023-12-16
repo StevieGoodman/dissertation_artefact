@@ -1,12 +1,3 @@
--------------- ╭───────────╮ ---------------
--------------- │ FUNCTIONS │ ---------------
--------------- ╰───────────╯ ---------------
-function Command(context)
-    local msg = "There are currently no commands implemented."
-    return msg
+return function(context)
+    return "There are currently no commands implemented."
 end
-
------------- ╭────────────────╮ ------------
------------- │ INITIALISATION │ ------------
------------- ╰────────────────╯ ------------
-return Command

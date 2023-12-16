@@ -1,24 +1,14 @@
---------------- ╭──────────╮ ---------------
---------------- │ SERVICES │ ---------------
---------------- ╰──────────╯ ---------------
-local REPL_STORE = game:GetService("ReplicatedStorage")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
---------------- ╭──────────╮ ---------------
---------------- │ PACKAGES │ ---------------
---------------- ╰──────────╯ ---------------
-local KNIT = require(REPL_STORE.Packages.Knit)
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
--------------- ╭───────────╮ ---------------
--------------- │ FUNCTIONS │ ---------------
--------------- ╰───────────╯ ---------------
-function SetUpKnit()
-    KNIT.AddControllers(script.Parent.Controllers)
-    KNIT.Start()
+function setUpKnit()
+    Knit.AddControllers(script.Parent.Controllers)
+    Knit.Start()
     :andThenCall(print, "Knit has successfully started on the client!")
-    :catch(function() error("Unable to start Knit on the client!") end)
+    :catch(function()
+        error("Unable to start Knit on the client!")
+    end)
 end
 
------------- ╭────────────────╮ ------------
------------- │ INITIALISATION │ ------------
------------- ╰────────────────╯ ------------
-SetUpKnit()
+setUpKnit()

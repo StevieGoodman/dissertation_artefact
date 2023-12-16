@@ -1,21 +1,18 @@
-local Custodian = require(script.Parent.Parent.Custodian)
 local Get = require(script.Parent.get)
 
 local collect = {}
 
-function collect._process(origin, filters, getFn, relationName)
+function collect._process(origin, filters, collectFunc, relationName)
     local results = {}
     for index, filter in filters do
-        local optionObj = getFn(origin, filter)
-        if Custodian.option.isNone(optionObj) then
-            return Custodian.result.err(`Unable to collect all {relationName}! Origin: {origin:GetFullName()}, filter: {filter}`)
+        local result = collectFunc(origin, filter)
+        if result then
+            results[index] = result
         else
-            Custodian.option.isSomeThen(optionObj, function(instance)
-                results[index] = instance
-            end)
+            error(`Unable to collect all {relationName}!\nOrigin: {origin:GetFullName()}\nFilter Name: {filter.Name}\nFilter Class: {filter.ClassName}`)
         end
     end
-    return Custodian.result.ok(results)
+    return results
 end
 
 function collect.children(origin, filters)
