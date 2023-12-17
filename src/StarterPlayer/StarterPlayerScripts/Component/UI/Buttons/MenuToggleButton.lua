@@ -14,16 +14,15 @@ function component:Construct()
     end
     SelectButton:WaitForInstance(self.Instance)
     :andThen(function(selectButton)
-        self.button = selectButton.button
         self.selectButton = selectButton
         self.objects = self.selectButton.objects
         self.events = self.selectButton.events
+        self.objects.menuFrame = self.objects.button.MenuFrame.Value
     end)
     :await()
 end
 
 function component:Start()
-    self.selectButton = self:GetComponent(SelectButton)
     self:registerSignals()
 end
 

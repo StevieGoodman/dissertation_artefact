@@ -21,19 +21,18 @@ function component:Construct()
     :andThen(function(button)
         self.button = button
         self.objects = self.button.objects
-        self.objects.menuFrame = self.Instance.MenuFrame.Value :: Frame
         self.events = self.button.events
         self.events.deselected = Signal.new()
         local children = self.button.objects.button.Parent:GetChildren()
         self.siblingButtons = TableUtil.Filter(children, function(child)
             return child:IsA("GuiButton") and child ~= self.objects.button
         end) :: {TextButton}
+        self.isSelected = self.objects.button.BackgroundTransparency == 0
     end)
     :await()
 end
 
 function component:Start()
-    self.isSelected = self.objects.button.BackgroundTransparency == 0
     self:registerEvents()
 end
 
