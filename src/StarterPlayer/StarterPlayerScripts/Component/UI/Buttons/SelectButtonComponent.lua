@@ -11,14 +11,13 @@ local component = Component.new {
     Tag = "SelectButton",
 }
 
-component.highlighted = Signal.new()
-component.unhighlighted = Signal.new()
-component.selected = Signal.new()
-component.deselected = Signal.new()
-
 function component:Construct()
     self:collectObjects()
     self.isSelected = self.objects.button.BackgroundTransparency == 0
+    self.highlighted = Signal.new()
+    self.unhighlighted = Signal.new()
+    self.selected = Signal.new()
+    self.deselected = Signal.new()
 end
 
 function component:Start()
@@ -73,25 +72,25 @@ end
 
 function component:highlight()
     self:setTransparency(0.25)
-    self.highlighted:Fire(self)
+    self.highlighted:Fire()
 end
 
 function component:unhighlight()
     self:setTransparency(0.5)
-    self.unhighlighted:Fire(self)
+    self.unhighlighted:Fire()
 end
 
 function component:select()
     self:deselectSiblings()
     self:setTransparency(0)
     self.isSelected = true
-    self.selected:Fire(self)
+    self.selected:Fire()
 end
 
 function component:deselect()
     self:setTransparency(0.5)
     self.isSelected = false
-    self.deselected:Fire(self)
+    self.deselected:Fire()
 end
 
 function component:deselectSiblings()

@@ -2,7 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 
-local SelectButtonComponent = require(script.Parent.SelectButtonComponent)
+local SelectButton = require(script.Parent.SelectButtonComponent)
 
 local extensions = {}
 
@@ -16,29 +16,25 @@ local component = Component.new {
 }
 
 function component:Start()
+    self.selectButton = self:GetComponent(SelectButton)
     self:registerSignals()
 end
 
 function component:registerSignals()
-    local selectButtonComponent = self:GetComponent(SelectButtonComponent)
-    selectButtonComponent.selected:Connect(function(selectButton)
-        if selectButton.Instance == self.Instance then
-            self:select(selectButton)
-        end
+    self.selectButton.selected:Connect(function()
+        self:select()
     end)
-    selectButtonComponent.deselected:Connect(function(selectButton)
-        if selectButton.Instance == self.Instance then
-            self:deselect(selectButton)
-        end
+    self.selectButton.deselected:Connect(function()
+        self:deselect()
     end)
 end
 
-function component:select(selectButton)
-    selectButton.objects.menuFrame.Visible = true
+function component:select()
+    self.selectButton.objects.menuFrame.Visible = true
 end
 
-function component:deselect(selectButton)
-    selectButton.objects.menuFrame.Visible = false
+function component:deselect()
+    self.selectButton.objects.menuFrame.Visible = false
 end
 
 return component
