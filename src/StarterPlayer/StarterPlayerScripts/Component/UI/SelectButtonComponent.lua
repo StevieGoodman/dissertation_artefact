@@ -1,14 +1,18 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
-local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 local Component = require(ReplicatedStorage.Packages.Component)
+local Signal = require(ReplicatedStorage.Packages.Signal)
+local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 
 local ANIMATION_DURATION = 0.25
 
 local component = Component.new {
     Tag = "SelectButton",
 }
+
+component.selected = Signal.new()
+component.deselected = Signal.new()
 
 function component:Construct()
     self:collectObjects()
@@ -73,13 +77,15 @@ end
 
 function component:select()
     self:deselectSiblings()
-    self.selected = true
     self:setTransparency(0)
+    self.selected = true
+    self.selected:Fire()
 end
 
 function component:deselect()
-    self.selected = false
     self:setTransparency(0.5)
+    self.selected = false
+    self.deselected:Fire()
 end
 
 function component:deselectSiblings()
