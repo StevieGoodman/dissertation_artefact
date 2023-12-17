@@ -17,9 +17,8 @@ function component:Construct()
     end
     Button:WaitForInstance(self.Instance)
     :andThen(function(button)
-        self.button = button
-        self.objects = self.button.objects
-        self.events = self.button.events
+        self.objects = button.objects
+        self.events = button.events
     end)
     :await()
 end
