@@ -15,9 +15,6 @@ local component = Component.new {
     Extensions = { extensions }
 }
 
-function component:Construct()
-end
-
 function component:Start()
     self:registerSignals()
 end
