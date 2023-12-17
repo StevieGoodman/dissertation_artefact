@@ -28,14 +28,16 @@ function controller:KnitStart()
 end
 
 function controller:showMainMenu()
+    
     self.assetService:getAsset("MainMenu")
     :andThen(function(mainMenu)
         if mainMenu then
             mainMenu.Parent = self.player.PlayerGui
+            Knit.GetService("Respawn").removeCharacter()
         else
             self.player:Kick([[Unable to get main menu. 
                 Either the game is broken, or your internet connection is poor.
-                Please contact ithacaTheEnby if this issue persists.]])
+                Please contact ithacaTheEnby if this issue persists.1]])
         end
     end)
     :catch(function(err)
@@ -71,7 +73,7 @@ function controller:onKeybind(inputObject: InputObject)
     if inputObject.UserInputState ~= Enum.UserInputState.Begin then
         return
     end
-    self:getMainMenu()
+    self:showMainMenu()
 end
 
 return controller

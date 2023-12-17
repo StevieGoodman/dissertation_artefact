@@ -2,7 +2,11 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-function respawn(_, player: Player, as: Team?)
+local service = Knit.CreateService {
+    Name = "Respawn",
+}
+
+function service:respawn(player: Player, as: Team?)
     if as then
         player.Team = as
     end
@@ -10,19 +14,20 @@ function respawn(_, player: Player, as: Team?)
     return `Successfully respawned {player} as a member of {as}!`
 end
 
-function respawnClient(self, player: Player, as: Team?)
+function service.Client:respawn(player: Player, as: Team?)
     if player.Character then
         error(`Cannot respawn {player}: Character is spawned in`)
     end
-    return respawn(self, player, as)
+    return self.Server:respawn(player, as)
 end
 
-local service = Knit.CreateService {
-    Name    = "Respawn",
-    Respawn = respawn,
-    Client  = {
-        respawn = respawnClient,
-    },
-}
+function service:removeCharacter(player: Player)
+    if player.Character then
+        player.Character:Destroy()
+        player.Character = nil
+    end
+end
+
+service.Client.removeCharacter = service.removeCharacter
 
 return service
