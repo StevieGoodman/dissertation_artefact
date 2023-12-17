@@ -3,31 +3,37 @@ local TweenService = game:GetService("TweenService")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 
-local SelectButtonComponent = require(script.Parent.SelectButtonComponent)
+local SelectButton = require(script.Parent.SelectButton)
 
 local ANIMATION_DURATION = script:GetAttribute("AnimationDuration") or 0.1
 
-local extensions = {}
-
-function extensions.ShouldConstruct(component)
-    return component.Instance:HasTag("SelectButton")
-end
-
 local component = Component.new {
     Tag = "InsetButton",
-    extensions = { extensions }
 }
 
+function component:Construct()
+    if not self.Instance:HasTag(SelectButton.Tag) then
+        self.Instance:AddTag(SelectButton.Tag)
+    end
+    SelectButton:WaitForInstance(self.Instance)
+    :andThen(function(selectButton)
+        self.button = selectButton.button
+        self.selectButton = selectButton
+        self.objects = self.selectButton.objects
+        self.events = self.selectButton.events
+    end)
+    :await()
+end
+
 function component:Start()
-    self.selectButton = self:GetComponent(SelectButtonComponent)
     self:registerSignals()
 end
 
 function component:registerSignals()
-    self.selectButton.selected:Connect(function()
+    self.events.selected:Connect(function()
         self:select()
     end)
-    self.selectButton.deselected:Connect(function()
+    self.events.deselected:Connect(function()
         self:deselect()
     end)
 end

@@ -5,6 +5,8 @@ local Component = require(ReplicatedStorage.Packages.Component)
 local Signal = require(ReplicatedStorage.Packages.Signal)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 
+local Button = require(script.Parent.Button)
+
 local ANIMATION_DURATION = script:GetAttribute("AnimationDuration") or 0.1
 
 local component = Component.new {
@@ -12,28 +14,27 @@ local component = Component.new {
 }
 
 function component:Construct()
-    self:collectObjects()
-    self.isSelected = self.objects.button.BackgroundTransparency == 0
-    self.highlighted = Signal.new()
-    self.unhighlighted = Signal.new()
-    self.selected = Signal.new()
-    self.deselected = Signal.new()
+    if not self.Instance:HasTag(Button.Tag) then
+        self.Instance:AddTag(Button.Tag)
+    end
+    Button:WaitForInstance(self.Instance)
+    :andThen(function(button)
+        self.button = button
+        self.objects = self.button.objects
+        self.objects.menuFrame = self.Instance.MenuFrame.Value :: Frame
+        self.events = self.button.events
+        self.events.deselected = Signal.new()
+        local children = self.button.objects.button.Parent:GetChildren()
+        self.siblingButtons = TableUtil.Filter(children, function(child)
+            return child:IsA("GuiButton") and child ~= self.objects.button
+        end) :: {TextButton}
+    end)
+    :await()
 end
 
 function component:Start()
+    self.isSelected = self.objects.button.BackgroundTransparency == 0
     self:registerEvents()
-end
-
-function component:collectObjects()
-    self.objects = {
-        button = self.Instance :: TextButton,
-        uiStroke = self.Instance.Stroke :: UIStroke,
-        menuFrame = self.Instance.MenuFrame.Value :: Frame,
-    }
-    local children = self.objects.button.Parent:GetChildren()
-    self.siblingButtons = TableUtil.Filter(children, function(child)
-        return child:IsA("GuiButton") and child ~= self.objects.button
-    end) :: {TextButton}
 end
 
 function component:registerEvents()
@@ -72,32 +73,32 @@ end
 
 function component:highlight()
     self:setTransparency(0.25)
-    self.highlighted:Fire()
+    self.events.highlighted:Fire()
 end
 
 function component:unhighlight()
     self:setTransparency(0.5)
-    self.unhighlighted:Fire()
+    self.events.unhighlighted:Fire()
 end
 
 function component:select()
     self:deselectSiblings()
     self:setTransparency(0)
     self.isSelected = true
-    self.selected:Fire()
+    self.events.selected:Fire()
 end
 
 function component:deselect()
     self:setTransparency(0.5)
     self.isSelected = false
-    self.deselected:Fire()
+    self.events.deselected:Fire()
 end
 
 function component:deselectSiblings()
     for _, button in self.siblingButtons do
-        local comp = self:FromInstance(button)
-        if comp and comp.isSelected then
-            comp:deselect()
+        local otherButton = self:FromInstance(button)
+        if otherButton and otherButton.isSelected then
+            otherButton:deselect()
         end
     end
 end
