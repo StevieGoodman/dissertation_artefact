@@ -46,8 +46,8 @@ function service:reserveSurname(player: Player)
 end
 
 function service:releaseSurname(player: Player)
-    self.surnames = TableUtil.Map(self.surnames, function(value, key)
-        if key == player then
+    self.surnames = TableUtil.Map(self.surnames, function(value)
+        if value == player then
             return false
         else
             return value
