@@ -16,53 +16,73 @@ local service = Knit.CreateService {
 }
 
 function service:KnitInit()
-    self.surnames = {}
-    for _, surname in SURNAMES do
-        self.surnames[surname] = false
-    end
+    self.identities = {} :: {[Player]: string}
 end
 
 function service:KnitStart()
     Observers.observeCharacter(function(player)
-        self:reserveSurname(player)
+        self:assignIdentity(player)
         return function()
-            self:releaseSurname(player)
+            self:revokeIdentity(player)
         end
     end)
 end
 
-function service:isSurnameAvailable(surname: string)
-    return self.surnames[surname] == false
-end
-
-function service:getPlayerSurname(player: Player)
-    local _, playerSurname = TableUtil.Find(self.surnames, function(otherPlayer)
-        return player == otherPlayer
+function service:isIdentityAvailable(surname: string)
+    return TableUtil.Every(TableUtil.Values(self.identities), function(value)
+        return value ~= surname
     end)
-    return playerSurname
 end
 
-function service:reserveSurname(player: Player)
-    local playerSurname = self:getPlayerSurname(player)
-    if playerSurname then
-        error(`{player} ({playerSurname}) already has a surname!`)
+function service:getPlayerIdentity(player: Player)
+    return self.identities[player]
+end
+
+function service:assignIdentity(player: Player, identity: string?)
+    local playerSpawnedIn = player.Character
+    if not playerSpawnedIn then
+        error(`{player} isn't spawned in!`)
     else
-        local _, surname = TableUtil.Find(self.surnames, function(_, key)
-            return self:isSurnameAvailable(key)
-        end)
-        self.surnames[surname] = player
-        return surname
+        if identity then
+            self:assignCustomIdentity(player, identity)
+            return identity
+        end
+        local isClassD = player.Team.Name == "Class-D Personnel"
+        if isClassD then
+            return self:assignDesignation(player)
+        else
+            return self:assignSurname(player)
+        end
     end
 end
 
-function service:releaseSurname(player: Player)
-    self.surnames = TableUtil.Map(self.surnames, function(value)
-        if value == player then
-            return false
-        else
-            return value
+function service:assignCustomIdentity(player: Player, identity: string)
+    self.identities[player] = identity
+end
+
+function service:assignDesignation(player: Player)
+    local identity
+    repeat
+        identity = tostring(math.random(1, 9999))
+        while #identity < 4 do
+            identity = `0{identity}`
         end
+        identity = `D-{identity}`
+    until self:isIdentityAvailable(identity)
+    self.identities[player] = identity
+    return identity
+end
+
+function service:assignSurname(player: Player)
+    local identity = TableUtil.Find(SURNAMES, function(surname)
+        return self:isIdentityAvailable(surname)
     end)
+    self.identities[player] = identity
+    return identity
+end
+
+function service:revokeIdentity(player: Player)
+    self.identities[player] = nil
 end
 
 return service
