@@ -33,9 +33,9 @@ function service:KnitStart()
     end)
 end
 
-function service:isIdentityAvailable(surname: string)
+function service:isIdentityAvailable(identity: string)
     return TableUtil.Every(TableUtil.Values(self.identities), function(value)
-        return value ~= surname
+        return value ~= identity
     end)
 end
 
@@ -79,8 +79,10 @@ function service:assignDesignation(player: Player)
 end
 
 function service:assignSurname(player: Player)
+    SURNAMES = TableUtil.Shuffle(SURNAMES)
     local honorific = HONORIFICS[player.Team.Name]
     local identity = TableUtil.Find(SURNAMES, function(surname)
+        surname = if honorific then `{honorific} {surname}` else surname
         return self:isIdentityAvailable(surname)
     end)
     identity = if honorific then `{honorific} {identity}` else identity
