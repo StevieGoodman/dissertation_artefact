@@ -1,3 +1,3 @@
-return function(context)
-    return "There are currently no commands implemented."
+return function(_)
+    return `[development] reserveName`
 end
