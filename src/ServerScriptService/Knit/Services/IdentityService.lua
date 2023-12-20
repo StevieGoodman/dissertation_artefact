@@ -10,6 +10,11 @@ local SURNAMES = {
     "Mitchell", "Ross", "Walker", "Paterson", "Young", "Watson", "Morrison",
     "Fraser", "Davidson", "Gray",
 }
+local HONORIFICS = {
+    ["Research Department"] = "Dr.",
+    ["Medical Department"] = "Dr.",
+    ["Security Department"] = "Officer",
+}
 
 local service = Knit.CreateService {
     Name = "Identity",
@@ -74,9 +79,12 @@ function service:assignDesignation(player: Player)
 end
 
 function service:assignSurname(player: Player)
+    local honorific = HONORIFICS[player.Team.Name]
+    print(honorific)
     local identity = TableUtil.Find(SURNAMES, function(surname)
         return self:isIdentityAvailable(surname)
     end)
+    identity = if honorific then `{honorific} {identity}` else identity
     self.identities[player] = identity
     return identity
 end
