@@ -2,6 +2,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
+Knit.OnStart():await()
+
 local IdentityService = Knit.GetService("Identity")
 
 return function(_, target: Player, identity: string?)
