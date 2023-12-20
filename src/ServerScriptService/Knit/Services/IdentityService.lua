@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+local Observers = require(ReplicatedStorage.Packages.Observers)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
@@ -19,6 +20,15 @@ function service:KnitInit()
     for _, surname in SURNAMES do
         self.surnames[surname] = false
     end
+end
+
+function service:KnitStart()
+    Observers.observeCharacter(function(player)
+        self:reserveSurname(player)
+        return function()
+            self:releaseSurname(player)
+        end
+    end)
 end
 
 function service:isSurnameAvailable(surname: string)
