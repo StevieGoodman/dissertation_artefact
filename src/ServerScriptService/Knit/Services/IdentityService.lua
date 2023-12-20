@@ -80,7 +80,6 @@ end
 
 function service:assignSurname(player: Player)
     local honorific = HONORIFICS[player.Team.Name]
-    print(honorific)
     local identity = TableUtil.Find(SURNAMES, function(surname)
         return self:isIdentityAvailable(surname)
     end)
