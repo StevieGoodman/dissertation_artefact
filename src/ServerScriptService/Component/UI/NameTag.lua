@@ -28,7 +28,8 @@ function component:Construct()
 end
 
 function component:Start()
-    self.text.Text = self.identityService:getPlayerIdentity(self.player)
+    local identity = self.identityService:getPlayerIdentity(self.player)
+    self.text.Text = string.upper(identity)
     self.text.BackgroundColor3 = self.player.TeamColor.Color
 end
 
