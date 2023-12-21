@@ -6,7 +6,7 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 local ClickButton = require(script.Parent.ClickButton)
 
 local component = Component.new {
-    Tag = "TeamSpawnButton",
+    Tag = "SpawnButton",
 }
 
 function component:Construct()
@@ -31,7 +31,10 @@ end
 function component:select()
     Knit.GetService("Respawn"):respawn(self.team)
     :andThen(function()
-        self.Instance:FindFirstAncestorOfClass("ScreenGui"):Destroy()
+        local menu = self.Instance:FindFirstAncestorOfClass("ScreenGui")
+        if menu then
+            menu:Destroy()
+        end
     end)
 end
 
