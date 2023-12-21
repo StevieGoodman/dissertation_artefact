@@ -33,8 +33,8 @@ end
 function component:isVisible()
     local cameraPosition = workspace.CurrentCamera.CFrame.Position
     local raycastParams = RaycastParams.new()
-    raycastParams.FilterDescendantsInstances = { self.Instance }
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams:AddToFilter(self.Instance.Parent)
     local result = workspace:Raycast(
         cameraPosition,
         self.Instance.WorldPosition - cameraPosition,
