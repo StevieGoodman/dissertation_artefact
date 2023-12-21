@@ -32,9 +32,13 @@ end
 
 function component:isVisible()
     local cameraPosition = workspace.CurrentCamera.CFrame.Position
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterDescendantsInstances = { self.Instance }
+    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
     local result = workspace:Raycast(
         cameraPosition,
-        self.Instance.WorldPosition - cameraPosition
+        self.Instance.WorldPosition - cameraPosition,
+        raycastParams
     )
     -- If nothing is in the way, we must have reached the attachment.
     local isVisible = result == nil
