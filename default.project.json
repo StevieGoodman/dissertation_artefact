@@ -9,9 +9,6 @@
 
             "Packages": {
                 "$path": "Packages"
-            },
-            "Modules": {
-                "$path": "src/Modules"
             }
         },
         "ServerScriptService": {
