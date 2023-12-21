@@ -28,7 +28,6 @@ function controller:KnitStart()
 end
 
 function controller:showMainMenu()
-    
     self.assetService:getAsset("MainMenu")
     :andThen(function(mainMenu)
         if mainMenu then
