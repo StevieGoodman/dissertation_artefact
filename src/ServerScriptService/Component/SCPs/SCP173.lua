@@ -46,9 +46,11 @@ function component:updateState(observed)
     if observed then
         self.groundController.TurnSpeedFactor = 0
         self.groundController.MoveSpeedFactor = 0
+        self.Instance.PrimaryPart:SetAttribute("DamagePerTouch", 0)
     else
         self.groundController.TurnSpeedFactor = 1
         self.groundController.MoveSpeedFactor = 1
+        self.Instance.PrimaryPart:SetAttribute("DamagePerTouch", -1)
     end
 end
 

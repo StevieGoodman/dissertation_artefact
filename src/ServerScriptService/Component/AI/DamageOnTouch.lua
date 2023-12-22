@@ -26,6 +26,7 @@ function component:tryDamageHumanoid(part: BasePart)
         return
     end
     self.canDamage = false
+    self.damage = self.Instance:GetAttribute("DamagePerTouch") or -1
     local damage = if self.damage < 0 then humanoid.MaxHealth else self.damage
     humanoid:TakeDamage(damage)
     Promise.delay(self.debounceTime)
