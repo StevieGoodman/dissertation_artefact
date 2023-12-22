@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
@@ -35,6 +36,9 @@ function component:isVisible()
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
     raycastParams:AddToFilter(self.Instance.Parent)
+    if Players.LocalPlayer.Character then
+        raycastParams:AddToFilter(Players.LocalPlayer.Character:GetDescendants())
+    end
     local result = workspace:Raycast(
         cameraPosition,
         self.Instance.WorldPosition - cameraPosition,
