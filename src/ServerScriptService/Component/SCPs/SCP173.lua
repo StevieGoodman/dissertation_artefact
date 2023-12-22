@@ -45,10 +45,10 @@ function component:updateState(observed)
     self.observed = observed
     if observed then
         self.groundController.TurnSpeedFactor = 0
-        self.groundController.WalkSpeedFactor = 0
+        self.groundController.MoveSpeedFactor = 0
     else
         self.groundController.TurnSpeedFactor = 1
-        self.groundController.WalkSpeedFactor = 1
+        self.groundController.MoveSpeedFactor = 1
     end
 end
 
