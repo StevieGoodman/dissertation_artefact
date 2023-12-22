@@ -35,6 +35,7 @@ function component:isVisible()
     local cameraPosition = workspace.CurrentCamera.CFrame.Position
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.CollisionGroup = "Sight"
     raycastParams:AddToFilter(self.Instance.Parent)
     if Players.LocalPlayer.Character then
         raycastParams:AddToFilter(Players.LocalPlayer.Character:GetDescendants())
