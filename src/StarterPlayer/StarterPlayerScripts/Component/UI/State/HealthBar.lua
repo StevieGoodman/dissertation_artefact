@@ -12,6 +12,9 @@ local component = Component.new {
 function component:Start()
     self.Instance:SetAttribute("Progress", 100)
     Observers.observeCharacter(function(_, character)
+        if character ~= Players.LocalPlayer.Character then
+            return
+        end
         local connection = character:WaitForChild("Humanoid"):GetPropertyChangedSignal("Health"):Connect(function()
             self.Instance:SetAttribute("Progress", character.Humanoid.Health / character.Humanoid.MaxHealth * 100)
         end)

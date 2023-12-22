@@ -16,6 +16,9 @@ end
 
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character: Model)
+        if character ~= self.player.Character then
+            return
+        end
         character:WaitForChild("Humanoid").Died:Connect(function()
             self:showDeathMenu()
         end)

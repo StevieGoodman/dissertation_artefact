@@ -4,8 +4,8 @@ local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local DAMAGE_RATE = 10
-local PROGRESSION_RATE_MIN = 5
-local PROGRESSION_RATE_MAX = 10
+local PROGRESSION_RATE_MIN = 0.5
+local PROGRESSION_RATE_MAX = 1.5
 
 local component = Component.new {
     Tag = "SCP008Infection",
