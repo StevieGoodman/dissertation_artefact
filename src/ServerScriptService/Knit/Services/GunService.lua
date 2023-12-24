@@ -24,4 +24,10 @@ function service.Client:fire(player: Player, at: Vector3)
     gun:fire(at, player)
 end
 
+function service.Client:reload(player: Player)
+    local gun = self.Server:getGunFromPlayer(player)
+    if not gun then return end
+    gun:reload()
+end
+
 return service

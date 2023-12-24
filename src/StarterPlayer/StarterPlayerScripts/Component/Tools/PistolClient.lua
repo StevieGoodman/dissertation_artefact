@@ -1,3 +1,4 @@
+local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local UserInputService = game:GetService("UserInputService")
@@ -9,15 +10,25 @@ local component = Component.new {
     Tag = "Pistol",
 }
 
-function component:Construct()
-    self.pistol = self.Instance :: Tool
-    self.maxRange = self.pistol:GetAttribute("MaxRange") or 256
+function component:Start()
+    self.Instance.Activated:Connect(function()
+        self:tryFire()
+    end)
+    self.Instance.Equipped:Connect(function()
+        ContextActionService:BindAction("Reload", function(_, inputState, _)
+            if inputState == Enum.UserInputState.Begin then
+                self:reload()
+            end
+        end, false, Enum.KeyCode.R)
+    end)
+    self.Instance.Unequipped:Connect(function()
+        ContextActionService:UnbindAction("Reload")
+    end)
 end
 
-function component:Start()
-    self.pistol.Activated:Connect(function()
-        self:fire()
-    end)
+function component:tryFire()
+    if self.Instance:GetAttribute("Ammo") <= 0 then return end
+    self:fire()
 end
 
 function component:fire()
@@ -35,12 +46,16 @@ function component:getMousePosition()
     raycastParams.FilterDescendantsInstances = { Players.LocalPlayer.Character }
     local raycastResult = workspace:Raycast(
         ray.Origin,
-        ray.Direction * self.maxRange,
+        ray.Direction * self.Instance:GetAttribute("MaxRange"),
         raycastParams
     )
     if raycastResult then
         return raycastResult.Position
     end
+end
+
+function component:reload()
+    Knit.GetService("Gun"):reload()
 end
 
 return component

@@ -1,6 +1,8 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
+local Knit = require(ReplicatedStorage.Packages.Knit)
+local Promise = require(ReplicatedStorage.Packages.Promise)
 local Waiter = require(ReplicatedStorage.Packages.Waiter)
 
 local component = Component.new {
@@ -8,22 +10,38 @@ local component = Component.new {
 }
 
 function component:Construct()
-    self.pistol = self.Instance :: Tool
-    self.bulletOrigin = Waiter.get.descendant(self.pistol, { tag = "BulletOrigin" })
-    self.damage = self.pistol:GetAttribute("Damage") or 10
-    self.lethalRange = self.pistol:GetAttribute("LethalRange") or 128
-    self.maxRange = self.pistol:GetAttribute("MaxRange") or 256
+    self.bulletOrigin = Waiter.get.descendant(self.Instance, { tag = "BulletOrigin" })
 end
 
 function component:fire(at: Vector3, player: Player)
     local bulletOrigin = self:getBulletOrigin()
     if not bulletOrigin then return end
+    if self.Instance:GetAttribute("Ammo") <= 0 then return end
+    if self.Instance:GetAttribute("Reloading") then return end
     local shotInstance = self:getShotInstance(bulletOrigin, at, player)
+    local ammo = self.Instance:GetAttribute("Ammo")
+    self.Instance:SetAttribute("Ammo", ammo - 1)
     local humanoid = self:getHumanoidFromPart(shotInstance)
     if not humanoid then return end
+    
     local range = (bulletOrigin - at).Magnitude
     local damage = self:getDamageFromRange(range)
     humanoid:TakeDamage(damage)
+end
+
+function component:reload()
+    if self.Instance:GetAttribute("Reloading") then return end
+    local reloadTime = self.Instance:GetAttribute("ReloadTime")
+    local ammoCapacity = self.Instance:GetAttribute("AmmoCapacity")
+    self.Instance:SetAttribute("Reloading", true)
+    Promise.delay(reloadTime):andThen(function()
+        self.Instance:SetAttribute("Ammo", ammoCapacity)
+        self.Instance:SetAttribute("Reloading", false)
+    end)
+end
+
+function component:getBulletOrigin()
+    return self.bulletOrigin.WorldCFrame.Position
 end
 
 function component:getShotInstance(from: Vector3, at: Vector3, player: Player)
@@ -32,7 +50,7 @@ function component:getShotInstance(from: Vector3, at: Vector3, player: Player)
     raycastParams.FilterDescendantsInstances = { player.Character }
     local raycastResult = workspace:Raycast(
         from,
-        (at - from).Unit * self.maxRange,
+        (at - from).Unit * self.Instance:GetAttribute("MaxRange"),
         raycastParams
     )
     if raycastResult then
@@ -48,18 +66,16 @@ function component:getHumanoidFromPart(part: BasePart)
 end
 
 function component:getDamageFromRange(range: number)
-    if range <= self.lethalRange then
-        return self.damage
+    local maxRange = self.Instance:GetAttribute("MaxRange")
+    local lethalRange = self.Instance:GetAttribute("LethalRange")
+    local damage = self.Instance:GetAttribute("Damage")
+    if range <= lethalRange then
+        return self.Instance:GetAttribute("Damage")
     else
-        local distanceRange = self.maxRange - self.lethalRange
-        local rangeBeyondLethal = range - self.lethalRange
-        local damage = self.damage * (1 - (rangeBeyondLethal / distanceRange))
-        return damage
+        local distanceRange = maxRange - lethalRange
+        local rangeBeyondLethal = range - lethalRange
+        return damage * (1 - (rangeBeyondLethal / distanceRange))
     end
-end
-
-function component:getBulletOrigin()
-    return self.bulletOrigin.WorldCFrame.Position
 end
 
 return component
