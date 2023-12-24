@@ -24,7 +24,15 @@ function service:respawn(player: Player, as: Team?)
     end
     local description = self:getHumanoidDescription(player.Team)
     player:LoadCharacterWithHumanoidDescription(description)
+    self:giveTools(player)
     return `Successfully respawned {player} as a member of {as}!`
+end
+
+function service:giveTools(player: Player)
+    local tools = player.Team:GetChildren()
+    for _, tool in tools do
+        tool:Clone().Parent = player.Backpack
+    end
 end
 
 function service.Client:respawn(player: Player, as: Team?)
