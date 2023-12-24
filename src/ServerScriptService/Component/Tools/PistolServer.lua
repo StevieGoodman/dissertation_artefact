@@ -1,7 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
-local Knit = require(ReplicatedStorage.Packages.Knit)
 local Promise = require(ReplicatedStorage.Packages.Promise)
 local Waiter = require(ReplicatedStorage.Packages.Waiter)
 
