@@ -18,40 +18,10 @@ function service:getGunFromPlayer(player: Player)
     return Pistol:FromInstance(gun) :: Tool
 end
 
-function service:getShotInstance(from: Vector3, to: Vector3, player: Player)
-    local gun = self:getGunFromPlayer(player)
-    if not gun then return end
-    local maxRange = gun.maxRange
-    local raycastParams = RaycastParams.new()
-    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
-    raycastParams.FilterDescendantsInstances = { player.Character }
-    local raycastResult = workspace:Raycast(
-        from,
-        (to - from).Unit * maxRange,
-        raycastParams
-    )
-    if raycastResult then
-        return raycastResult.Instance
-    end
-end
-
-function service:getHumanoidFromPart(part: BasePart)
-    local character = part:FindFirstAncestorOfClass("Model")
-    if not character then return end
-    local humanoid = character:FindFirstChildOfClass("Humanoid")
-    return humanoid
-end
-
 function service.Client:fire(player: Player, at: Vector3)
     local gun = self.Server:getGunFromPlayer(player)
-    local bulletOrigin = gun:getBulletOrigin()
-    if not bulletOrigin or not gun then return end
-    local shotInstance = self.Server:getShotInstance(bulletOrigin, at, player)
-    local humanoid = self.Server:getHumanoidFromPart(shotInstance)
-    if not humanoid then return end
-    local range = (bulletOrigin - at).Magnitude
-    local damage = gun:getDamageFromRange(range)
-    humanoid:TakeDamage(damage)
+    if not gun then return end
+    gun:fire(at, player)
 end
 
 return service

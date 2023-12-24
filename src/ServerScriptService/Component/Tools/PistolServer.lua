@@ -15,6 +15,38 @@ function component:Construct()
     self.maxRange = self.pistol:GetAttribute("MaxRange") or 256
 end
 
+function component:fire(at: Vector3, player: Player)
+    local bulletOrigin = self:getBulletOrigin()
+    if not bulletOrigin then return end
+    local shotInstance = self:getShotInstance(bulletOrigin, at, player)
+    local humanoid = self:getHumanoidFromPart(shotInstance)
+    if not humanoid then return end
+    local range = (bulletOrigin - at).Magnitude
+    local damage = self:getDamageFromRange(range)
+    humanoid:TakeDamage(damage)
+end
+
+function component:getShotInstance(from: Vector3, at: Vector3, player: Player)
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.FilterDescendantsInstances = { player.Character }
+    local raycastResult = workspace:Raycast(
+        from,
+        (at - from).Unit * self.maxRange,
+        raycastParams
+    )
+    if raycastResult then
+        return raycastResult.Instance
+    end
+end
+
+function component:getHumanoidFromPart(part: BasePart)
+    local character = part:FindFirstAncestorOfClass("Model")
+    if not character then return end
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    return humanoid
+end
+
 function component:getDamageFromRange(range: number)
     if range <= self.lethalRange then
         return self.damage
