@@ -10,12 +10,6 @@ local component = Component.new {
 
 component.interacted = Signal.new()
 
-function component:Start()
-    self.interacted:Connect(function(player)
-        print(`{player} interacted with {self.Instance}!`)
-    end)
-end
-
 function component:tryInteract(player)
     self.interacted:Fire(player)
 end
