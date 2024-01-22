@@ -15,7 +15,7 @@ local service = Knit.CreateService {
 }
 
 function service:checkPermissions(player: Player, commandGroup: string)
-    if not commandGroup then return end
+    if not commandGroup then return true end
     local rank = player:GetRankInGroup(GROUP_ID)
     local requiredRank = PERMS_TABLE[commandGroup]
     if not requiredRank then
