@@ -22,7 +22,8 @@ function component:Start()
 end
 
 function component:tryInteract(player)
-    if self.hook and not self.hook(player) then return end
+    local has005 = player.Character and WaiterV5.get.child(player.Character, "SCP005")
+    if not has005 and self.hook and not self.hook(player) then return end
     self:interact(player)
 end
 
