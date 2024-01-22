@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local InteractionObjectComponent = require(script.Parent.InteractionObject)
 
@@ -14,7 +15,7 @@ function component:Construct()
 end
 
 function hook(player)
-    return player.Team.Name ~= "Class-D Personnel"
+    return Knit.GetService("InteractionPermissions"):checkPermissions(player)
 end
 
 function component:Start()
