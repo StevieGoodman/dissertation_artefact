@@ -8,7 +8,9 @@ local component = Component.new {
     Ancestors = { workspace }
 }
 
-component.interacted = Signal.new()
+function component:Construct()
+    self.interacted = Signal.new()
+end
 
 function component:tryInteract(player)
     self.interacted:Fire(player)
