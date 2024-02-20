@@ -1,6 +1,6 @@
 return {
     Name        = "TeleportLocation",
-    Group       = "development",
+    -- Group       = "development",
     Aliases     = { "tploc", "loctp" },
     Description = "Teleports players to a location",
     Args        = {
