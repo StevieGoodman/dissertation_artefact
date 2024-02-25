@@ -37,7 +37,7 @@ end
 
 function service.Client:respawn(player: Player, as: Team?)
     if player.Character and player.Character.Humanoid.Health > 0 then
-        error(`Cannot respawn {player}: Character is spawned in`)
+        warn(`Cannot respawn {player}: Character is spawned in`)
     end
     return self.Server:respawn(player, as)
 end
