@@ -7,7 +7,7 @@ local service = Knit.CreateService {
 }
 
 function service:checkPermissions(player: Player)
-    return player.Team.Name ~= "Class-D Personnel"
+    return player.Team.Name ~= "Class-D Personnel" or player:GetAttribute("InteractionPermissionsOverride")
 end
 
 function service.Client:checkPermissions(player: Player)
