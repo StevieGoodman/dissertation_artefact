@@ -8,9 +8,9 @@ return function(registry)
                 "CDCU Viewing Area",
                 "DFU Cafeteria",
                 "Medical Department",
-                "SCP-005",
-                "SCP-008",
-                "SCP-173",
+                "Briefing Room A",
+                "Briefing Room B",
+                "Briefing Room C",
             }
         )
     )
