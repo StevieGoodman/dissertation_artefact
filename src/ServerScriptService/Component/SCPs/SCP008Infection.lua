@@ -27,7 +27,6 @@ function component:Start()
 end
 
 function component:SteppedUpdate(dt)
-    print(self.progression, self.progressionRate)
     self.progression = self.progression + (self.progressionRate * dt)
     self.progression = math.clamp(self.progression, 0, 100)
     if self.progression == 100 then
