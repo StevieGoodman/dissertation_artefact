@@ -11,6 +11,10 @@ return function(registry)
                 "Briefing Room A",
                 "Briefing Room B",
                 "Briefing Room C",
+                "Containment Hall",
+                "SCP-005",
+                "SCP-173",
+                "SCP-008",
             }
         )
     )
