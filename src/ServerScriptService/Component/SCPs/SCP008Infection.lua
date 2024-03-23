@@ -16,7 +16,7 @@ function component:Construct()
     Knit.OnStart():await()
     self.assetService = Knit.GetService("Asset")
     self.progression = 0
-    self.progressionRate = math.random(PROGRESSION_RATE_MIN * 10, PROGRESSION_RATE_MAX * 10) / 10
+    self.progressionRate = Random.new():NextNumber(PROGRESSION_RATE_MIN, PROGRESSION_RATE_MAX)
     self.contagious = false
     self.humanoidRoot = self.Instance
     self.humanoid = self.Instance.Parent.Humanoid :: Humanoid
