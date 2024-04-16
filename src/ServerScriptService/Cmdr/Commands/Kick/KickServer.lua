@@ -13,7 +13,7 @@ return function(context, players: {Player}, reason: string)
             message ..= `You do not have a high enough personnel class to kick {player.Name}!\n`
             continue
         end
-        ModerationService:kick(player, `You have been kicked from the server by {context.Executor.Name}. Reason: {reason}`)
+        ModerationService:kick(player, context.Executor, reason)
         message ..= `Successfully kicked {player.Name}!\n`
     end
     message = string.sub(message, 1, -2)
