@@ -16,7 +16,7 @@ local service = Knit.CreateService {
 }
 
 function service:checkPermissions(player: Player, commandGroup: string)
-    if player.UserId < 0 then
+    if player.UserId <= 0 then
         print(`{player.Name} is a test player account. Their permission has been approved!`)
         return true
     end
@@ -34,11 +34,7 @@ end
     true if player1 has higher permissions than player2.
 --]]
 function service:comparePermissions(player1: Player, player2: Player): boolean
-    if player1.UserId < 0 then
-        print(`{player1.Name} is a test player account. Their permission has been approved!`)
-        return true
-    end
-    return player1:GetRankInGroup(GROUP_ID) > player2:GetRankInGroup(GROUP_ID)
+    return player1:GetRankInGroup(GROUP_ID) > player2:GetRankInGroup(GROUP_ID) or player1.UserId < 0
 end
 
 function service.Client:checkPermissions(_, player: Player, commandGroup: string)
