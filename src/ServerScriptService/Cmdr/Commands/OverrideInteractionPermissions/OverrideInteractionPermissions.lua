@@ -1,6 +1,6 @@
 return {
     Name        = "overrideinteractionpermissions",
-    Aliases     = { "overrideperms" },
+    Aliases     = { "overrideperms", "perms", "sudo" },
     Description = "Overrides the interaction permissions for a player",
     Group       = "development",
     Args        = {

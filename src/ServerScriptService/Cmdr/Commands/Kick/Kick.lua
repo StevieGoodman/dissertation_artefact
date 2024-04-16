@@ -1,7 +1,8 @@
 return {
-    Name = "kick",
+    Name = "Kick",
     Description = "Kicks a set of players from the server",
     Group = "moderation",
+    Aliases = { "boot", "k" },
     Args = {
         {
             Type = "players",
