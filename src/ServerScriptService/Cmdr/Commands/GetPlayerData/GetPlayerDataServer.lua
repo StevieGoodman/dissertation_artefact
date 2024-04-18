@@ -22,7 +22,7 @@ end
 
 return function(_, player: Player)
     local success, result = pcall(function()
-        return Knit.GetService("PlayerData"):getProfileData(player)
+        return Knit.GetService("PlayerData"):getProfile(player.UserId).Data
     end)
     if success then
         local message = parseData(result)

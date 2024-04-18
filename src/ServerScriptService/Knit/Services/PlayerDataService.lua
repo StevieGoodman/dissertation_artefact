@@ -54,6 +54,10 @@ function service:_loadProfile(player: Player)
             print(`Successfully loaded {player.Name}'s profile, however they left the game before data was loaded. Profile has been released.`)
         end
         self.profiles[player] = profile
+        self:_processActiveUpdates(profile)
+        profile.GlobalUpdates:ListenToNewActiveUpdate(function(updateId, updateData)
+            self:_processActiveUpdate(profile, updateId, updateData)
+        end)
         print(`Successfully loaded {player.Name}'s profile.`)
     else
         player:Kick(
@@ -76,16 +80,53 @@ function service:_releaseProfile(player: Player)
 end
 
 --[[
-    Gets a player's profile data. It does not return the profile object itself, but rather the data stored in the profile.
+    Processes all active updates for a player's profile.
 --]]
-function service:getProfileData(player: Player)
-    if not self.profiles[player] then
-        task.wait(5)
+function service:_processActiveUpdates(profile: table)
+    for _, updateInfo in profile.GlobalUpdates:GetActiveUpdates() do
+        self:_processActiveUpdate(profile, updateInfo[1], updateInfo[2])
     end
-    if not self.profiles[player] then
-        error(`Attempted to read profile data for {player.Name}, but it was not loaded!`)
-    end
-    return self.profiles[player].Data
 end
+
+--[[
+    Processes a single active update for a player's profile.
+--]]
+function service:_processActiveUpdate(profile: table, updateId, updateData)
+    profile.GlobalUpdates:LockActiveUpdate(updateId)
+    Knit:GetService(updateData.service)[updateData.functionName](
+        updateData.service,
+        profile,
+        table.unpack(updateData.args)
+    )
+    profile.GlobalUpdates:ClearActiveUpdate(updateId)
+end
+
+--[[
+    Gets a player's profile. This is a read-only operation, and should not be used to update profile data.
+--]]
+function service:getProfile(userId: number)
+    local player = Players:GetPlayerByUserId(userId)
+    if player then
+        repeat task.wait()
+        until self.profiles[player] or not player:IsDescendantOf(Players)
+        return table.clone(self.profiles[player])
+    else
+        return self.profileStore:ViewProfileAsync(`{userId}`)
+    end
+end
+
+--[[
+    Creates a profile profile update with the given updateData.
+--]]
+function service:createProfileUpdate(userId: number, updateData: table)
+    self.profileStore:GlobalUpdateProfileAsync(
+        `{userId}`,
+        function(globalUpdates)
+            globalUpdates:AddActiveUpdate(updateData)
+        end
+    )
+end
+
+
 
 return service

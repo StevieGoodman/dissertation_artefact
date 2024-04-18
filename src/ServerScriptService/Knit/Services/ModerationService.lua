@@ -27,7 +27,7 @@ end
     Verifies a player isn't banned from the game.
 --]]
 function service:screenPlayer(player: Player)
-    local profileData = self.PlayerDataService:getProfileData(player)
+    local profileData = self.PlayerDataService:getProfile(player.UserId).Data
     for _, moderationEvent in profileData.moderationRecord do
         if moderationEvent.eventType ~= service.EventType.Ban
         or moderationEvent.details.endTimestamp < os.time()
@@ -37,14 +37,13 @@ function service:screenPlayer(player: Player)
         local hour = os.date("%I", moderationEvent.details.endTimestamp)
         hour = if hour:sub(1, 1) == "0" then hour:sub(2) else hour -- Remove leading zero
         local moderatorName = `user ID {moderationEvent.moderator}`
-            pcall(function()
-                moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.moderator)
-            end)
+        pcall(function()
+            moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.moderator)
+        end)
         local kickMsg = os.date(
             `You have been temporarily banned from the game by {moderatorName} for \"{moderationEvent.reason}\". Your ban will be lifted on %A %d %B at {hour}%p.`, 
             moderationEvent.details.endTimestamp
         )
-        print(`{player.Name} has been kicked from the server due to a temporary ban.`)
         player:Kick(kickMsg)
         break
     end
@@ -53,8 +52,7 @@ end
 --[[
     Records a moderation event in a player's permanent moderation record.
 --]]
-function service:logModerationEvent(player: Player, moderator: Player, eventType: string, reason: string, details: table)
-    local profileData = self.PlayerDataService:getProfileData(player)
+function service:logModerationEvent(profile: table, moderator: Player, eventType: string, reason: string, details: table)
     local moderationEvent = {
         eventType = eventType,
         reason = reason,
@@ -63,7 +61,7 @@ function service:logModerationEvent(player: Player, moderator: Player, eventType
         timestamp = os.time(),
     }
     table.insert(
-        profileData.moderationRecord,
+        profile.Data.moderationRecord,
         moderationEvent
     )
     print(`{moderator} successfully logged "{eventType}" moderation event in {player.Name}'s moderation record.`)
@@ -73,21 +71,24 @@ end
     Pardons a moderation event in a player's moderation record. This doesn't delete the event,
     but it marks it as pardoned, logging the pardoning moderator, reason and timestamp.
 --]]
-function service:pardonModerationEvent(player: Player, moderator: Player, id: number, reason: string)
-    local profileData = self.PlayerDataService:getProfileData(player)
+function service:pardonModerationEvent(profile, moderator: Player, id: number, reason: string)
+    local profileData = profile.Data
+    local playerName = `user ID {profile.UserIds[1]}`
+    pcall(function()
+        playerName = Players:GetNameFromUserIdAsync(profile.UserIds[1])
+    end)
     local moderationEvent = profileData.moderationRecord[id]
     if not moderationEvent then
-        return `Moderation event with ID {id} does not exist in {player.Name}'s moderation record!`
+        return `Moderation event with ID {id} does not exist in {playerName}'s moderation record!`
     elseif moderationEvent.pardon then
-        return `Moderation event with ID {id} has already been pardoned in {player.Name}'s moderation record!`
+        return `Moderation event with ID {id} has already been pardoned in {playerName}'s moderation record!`
     end
     moderationEvent.pardon = {
         moderator = moderator.UserId,
         reason = reason,
         timestamp = os.time(),
     }
-    print(`{moderator} successfully pardoned moderation event ID {id} in {player.Name}'s moderation record.`)
-    return `Successfully pardoned moderation event ID {id} in {player.Name}'s moderation record.`
+    return `Successfully pardoned moderation event ID {id} in {playerName}'s moderation record.`
 end
 
 --[[
@@ -102,7 +103,12 @@ end
     Kicks a player from the server and logs a new kick event in their moderation record.
 --]]
 function service:kick(player: Player, moderator: Player, reason: string)
-    self:logModerationEvent(player, moderator, self.EventType.Kick, reason)
+    local updateData = {
+        service = "Moderation",
+        functionName = "logModerationEvent",
+        args = { moderator, service.EventType.Kick, reason },
+    }
+    self.PlayerDataService:createProfileUpdate(player.UserId, updateData)
     player:Kick(`You have been kicked from this server by {moderator.Name} for "{reason}".`)
 end
 
@@ -110,14 +116,18 @@ end
     Bans a player from the game temporarily and logs a new ban event in their moderation record.
 --]]
 function service:banTemporarily(player: Player, moderator: Player, reason: string, endTimestamp: number)
-    self:logModerationEvent(player, moderator, self.EventType.Ban, reason, { endTimestamp = endTimestamp })
+    local updateData = {
+        service = "Moderation",
+        functionName = "logModerationEvent",
+        args = { moderator, service.EventType.Ban, reason, { endTimestamp = endTimestamp } },
+    }
+    self.PlayerDataService:createProfileUpdate(player.UserId, updateData)
     local hour = os.date("%I", endTimestamp)
     hour = if hour:sub(1, 1) == "0" then hour:sub(2) else hour -- Remove leading zero
     local kickMsg = os.date(
         `You have been temporarily banned from the game by {moderator.Name} for \"{reason}\". Your ban will be lifted on %A %d %B at {hour}%p.`,
         endTimestamp
     )
-    print(`{player.Name} has been banned from the game by {moderator.Name} for "{reason}".`)
     --player:Kick(kickMsg)
 end
 
