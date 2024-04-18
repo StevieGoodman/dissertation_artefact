@@ -7,7 +7,7 @@ return {
     },
     Args = {
         {
-            Type = "player",
+            Type = "player @ playerId # integer",
             Name = "target",
             Description = "Whose data to view",
         },

@@ -5,7 +5,7 @@ return {
     Aliases = { "boot", "k" },
     Args = {
         {
-            Type = "players",
+            Type = "players # playerIds",
             Name = "targets",
             Description = "The players to kick from the server",
         },

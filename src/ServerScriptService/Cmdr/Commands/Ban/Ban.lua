@@ -5,7 +5,7 @@ return {
     Aliases = { "tban", "temporaryban", "bantemp", "bant", "bantemporary" },
     Args = {
         {
-            Type = "players",
+            Type = "players # playerIds",
             Name = "targets",
             Description = "The players to ban",
         },

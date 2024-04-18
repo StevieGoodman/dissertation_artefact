@@ -7,18 +7,26 @@ local ModerationService = Knit.GetService("Moderation")
 
 local TIME_FORMAT_STRING = "%A %d %B %Y at %I:%M%p"
 
-return function(_, player: Player)
-    local moderationRecord = ModerationService:getModerationRecord(player)
+return function(_, player: Player | number)
+    local playerId = if type(player) == "number" then player else player.UserId
+    local playerName = `User ID {playerId}`
+    pcall(function()
+        playerName = Players:GetNameFromUserIdAsync(playerId)
+    end)
+    local moderationRecord = ModerationService:getModerationRecord(playerId)
+    if not moderationRecord then
+        return `{playerName} has never joined the game.`
+    end
     local message = ""
     for id, moderationEvent in moderationRecord do
-        local moderatorName = `user ID {moderationEvent.moderator}`
+        local moderatorName = `User ID {moderationEvent.moderator}`
         pcall(function()
             moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.pardon.moderator)
         end)
         local formattedTime = os.date(TIME_FORMAT_STRING, moderationEvent.timestamp)
         message ..= `(#{id}) {moderationEvent.eventType}: {moderationEvent.reason}\nModerated by {moderatorName} on {formattedTime}\n`
         if moderationEvent.pardon then
-            moderatorName = `user ID {moderationEvent.pardon.moderator}`
+            moderatorName = `User ID {moderationEvent.pardon.moderator}`
             pcall(function()
                 moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.pardon.moderator)
             end)
@@ -29,7 +37,7 @@ return function(_, player: Player)
     end
     message = string.sub(message, 1, -3) -- Remove the last line break
     if message == "" then
-        message = `{player.Name} has no moderation record.`
+        message = `{playerName} has no moderation record.`
     end
     return message
 end

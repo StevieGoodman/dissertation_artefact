@@ -4,7 +4,7 @@ return {
     Group = "moderator",
     Args = {
         {
-            Type = "player",
+            Type = "player # playerId",
             Name = "target",
             Description = "Subject of the pardon",
         },

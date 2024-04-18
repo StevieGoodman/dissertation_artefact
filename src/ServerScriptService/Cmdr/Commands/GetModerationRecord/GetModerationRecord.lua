@@ -10,7 +10,7 @@ return {
     },
     Args = {
         {
-            Type = "player",
+            Type = "player @ playerId # number",
             Name = "target",
             Description = "Whose moderation record to show",
         },
