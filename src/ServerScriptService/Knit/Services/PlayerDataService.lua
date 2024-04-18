@@ -80,6 +80,9 @@ end
 --]]
 function service:getProfileData(player: Player)
     if not self.profiles[player] then
+        task.wait(5)
+    end
+    if not self.profiles[player] then
         error(`Attempted to read profile data for {player.Name}, but it was not loaded!`)
     end
     return self.profiles[player].Data

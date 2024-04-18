@@ -1,6 +1,8 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local Observers = require(ReplicatedStorage.Packages.Observers)
 
 local service = Knit.CreateService {
     Name = "Moderation",
@@ -8,10 +10,44 @@ local service = Knit.CreateService {
 
 service.EventType = {
     Kick = "Kick",
+    Ban = "Ban",
 }
 
 function service:KnitStart()
     self.PlayerDataService = Knit.GetService("PlayerData")
+    Observers.observePlayer(function(player)
+        self:screenPlayer(player)
+    end)
+    for _, player in Players:GetPlayers() do
+        self:screenPlayer(player)
+    end
+end
+
+--[[
+    Verifies a player isn't banned from the game.
+--]]
+function service:screenPlayer(player: Player)
+    local profileData = self.PlayerDataService:getProfileData(player)
+    for _, moderationEvent in profileData.moderationRecord do
+        if moderationEvent.eventType ~= service.EventType.Ban
+        or moderationEvent.details.endTimestamp < os.time()
+        or moderationEvent.pardon then
+            continue
+        end
+        local hour = os.date("%I", moderationEvent.details.endTimestamp)
+        hour = if hour:sub(1, 1) == "0" then hour:sub(2) else hour -- Remove leading zero
+        local moderatorName = `user ID {moderationEvent.moderator}`
+            pcall(function()
+                moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.moderator)
+            end)
+        local kickMsg = os.date(
+            `You have been temporarily banned from the game by {moderatorName} for \"{moderationEvent.reason}\". Your ban will be lifted on %A %d %B at {hour}%p.`, 
+            moderationEvent.details.endTimestamp
+        )
+        print(`{player.Name} has been kicked from the server due to a temporary ban.`)
+        player:Kick(kickMsg)
+        break
+    end
 end
 
 --[[
@@ -67,10 +103,22 @@ end
 --]]
 function service:kick(player: Player, moderator: Player, reason: string)
     self:logModerationEvent(player, moderator, self.EventType.Kick, reason)
-    player:Kick(
-        `You have been kicked from this server by {moderator.Name} for "{reason}".\
-        Your moderation record has been updated appropriately.`
+    player:Kick(`You have been kicked from this server by {moderator.Name} for "{reason}".`)
+end
+
+--[[
+    Bans a player from the game temporarily and logs a new ban event in their moderation record.
+--]]
+function service:banTemporarily(player: Player, moderator: Player, reason: string, endTimestamp: number)
+    self:logModerationEvent(player, moderator, self.EventType.Ban, reason, { endTimestamp = endTimestamp })
+    local hour = os.date("%I", endTimestamp)
+    hour = if hour:sub(1, 1) == "0" then hour:sub(2) else hour -- Remove leading zero
+    local kickMsg = os.date(
+        `You have been temporarily banned from the game by {moderator.Name} for \"{reason}\". Your ban will be lifted on %A %d %B at {hour}%p.`,
+        endTimestamp
     )
+    print(`{player.Name} has been banned from the game by {moderator.Name} for "{reason}".`)
+    --player:Kick(kickMsg)
 end
 
 return service
