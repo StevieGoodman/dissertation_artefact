@@ -1,10 +1,10 @@
 return {
     Name = "pardon",
     Description = "Pardons a moderation event in a player's moderation record",
-    Group = "moderator",
+    Group = "moderation",
     Args = {
         {
-            Type = "player # playerId",
+            Type = "player @ playerId # integer",
             Name = "target",
             Description = "Subject of the pardon",
         },

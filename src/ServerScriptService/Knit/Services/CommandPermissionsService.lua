@@ -1,3 +1,4 @@
+local GroupService = game:GetService("GroupService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
@@ -33,8 +34,25 @@ end
     Compares two player's permissions in the main Foundation group and returns
     true if player1 has higher permissions than player2.
 --]]
-function service:comparePermissions(player1: Player, player2: Player): boolean
-    return player1:GetRankInGroup(GROUP_ID) > player2:GetRankInGroup(GROUP_ID) or player1.UserId < 0
+function service:comparePermissions(playerId1: number, playerId2: number): boolean
+    if playerId1 <= 0 then
+        return true
+    end
+    local player1Rank = 0
+    local player2Rank = 0
+    for _, group in GroupService:GetGroupsAsync(playerId1) do
+        if group.Id == GROUP_ID then
+            player1Rank = group.Rank
+            break
+        end
+    end
+    for _, group in GroupService:GetGroupsAsync(playerId2) do
+        if group.Id == GROUP_ID then
+            player2Rank = group.Rank
+            break
+        end
+    end
+    return player1Rank > player2Rank
 end
 
 function service.Client:checkPermissions(_, player: Player, commandGroup: string)

@@ -43,10 +43,7 @@ function service:_loadProfile(player: Player)
         profile:Reconcile()
         profile:ListenToRelease(function()
             self.profiles[player] = nil
-            player:Kick(
-                "Your player data has been loaded by another server.\
-                If you haven't joined another server, please contact ithacaTheEnby immediately!"
-            )
+            player:Kick("Your player data has been loaded by another server. If you haven't joined another server, please contact ithacaTheEnby immediately!")
             print(`Successfully released {player.Name}'s profile.`)
         end)
         if not player:IsDescendantOf(Players) then -- Player has left the game before their data was loaded
@@ -60,10 +57,7 @@ function service:_loadProfile(player: Player)
         end)
         print(`Successfully loaded {player.Name}'s profile.`)
     else
-        player:Kick(
-            "Failed to load player data. Please rejoin in a few moments.\
-            Should this issue persist, please contact ithacaTheEnby."
-        )
+        player:Kick("Failed to load player data. Please rejoin in a few moments. Should this issue persist, please contact ithacaTheEnby.")
         error(`Failed to load {player.Name}'s profile.`)
     end
 end
@@ -84,21 +78,25 @@ end
 --]]
 function service:_processActiveUpdates(profile: table)
     for _, updateInfo in profile.GlobalUpdates:GetActiveUpdates() do
-        self:_processActiveUpdate(profile, updateInfo[1], updateInfo[2])
+        local updateId = updateInfo[1]
+        local updateData = updateInfo[2]
+        profile.GlobalUpdates:LockActiveUpdate(updateId)
+        self:_processUpdate(profile, updateData)
+        profile.GlobalUpdates:ClearLockedUpdate(updateId)
     end
 end
 
 --[[
     Processes a single active update for a player's profile.
 --]]
-function service:_processActiveUpdate(profile: table, updateId, updateData)
-    profile.GlobalUpdates:LockActiveUpdate(updateId)
-    Knit:GetService(updateData.service)[updateData.functionName](
-        updateData.service,
+function service:_processUpdate(profile: table, updateData)
+    local otherService = Knit.GetService(updateData.service)
+    otherService[updateData.functionName](
+        otherService,
         profile,
+        updateData.userId,
         table.unpack(updateData.args)
     )
-    profile.GlobalUpdates:ClearActiveUpdate(updateId)
 end
 
 --[[
@@ -119,12 +117,18 @@ end
     Creates a profile profile update with the given updateData.
 --]]
 function service:createProfileUpdate(userId: number, updateData: table)
-    self.profileStore:GlobalUpdateProfileAsync(
-        `{userId}`,
-        function(globalUpdates)
-            globalUpdates:AddActiveUpdate(updateData)
-        end
-    )
+    updateData.userId = userId -- Negative user IDs cannot be read from the profile store. Really stupid.
+    local player = Players:GetPlayerByUserId(userId)
+    if player then
+        self:_processUpdate(self.profiles[player], updateData)
+    else
+        self.profileStore:GlobalUpdateProfileAsync(
+            `{userId}`,
+            function(globalUpdates)
+                globalUpdates:AddActiveUpdate(updateData)
+            end
+        )
+    end
 end
 
 

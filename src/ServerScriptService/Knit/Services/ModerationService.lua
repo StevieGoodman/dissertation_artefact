@@ -52,7 +52,7 @@ end
 --[[
     Records a moderation event in a player's permanent moderation record.
 --]]
-function service:logModerationEvent(profile: table, moderator: number, eventType: string, reason: string, details: table)
+function service:logModerationEvent(profile: table, userId: number, moderator: number, eventType: string, reason: string, details: table)
     local moderationEvent = {
         eventType = eventType,
         reason = reason,
@@ -64,14 +64,16 @@ function service:logModerationEvent(profile: table, moderator: number, eventType
         profile.Data.moderationRecord,
         moderationEvent
     )
-    print(`{moderator} successfully logged "{eventType}" moderation event in {player.Name}'s moderation record.`)
+    if Players:GetPlayerByUserId(userId) then
+        self:screenPlayer(Players:GetPlayerByUserId(userId))
+    end
 end
 
 --[[
     Pardons a moderation event in a player's moderation record. This doesn't delete the event,
     but it marks it as pardoned, logging the pardoning moderator, reason and timestamp.
 --]]
-function service:pardonModerationEvent(profile, moderatorId: number, id: number, reason: string)
+function service:pardonModerationEvent(profile, _, moderatorId: number, id: number, reason: string)
     local profileData = profile.Data
     local moderationEvent = profileData.moderationRecord[id]
     if not moderationEvent or moderationEvent.pardon then
