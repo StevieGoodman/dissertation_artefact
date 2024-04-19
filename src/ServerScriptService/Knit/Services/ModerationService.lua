@@ -34,14 +34,12 @@ function service:screenPlayer(player: Player)
         or moderationEvent.pardon then
             continue
         end
-        local hour = os.date("%I", moderationEvent.details.endTimestamp)
-        hour = if hour:sub(1, 1) == "0" then hour:sub(2) else hour -- Remove leading zero
         local moderatorName = `user ID {moderationEvent.moderator}`
         pcall(function()
             moderatorName = Players:GetNameFromUserIdAsync(moderationEvent.moderator)
         end)
         local kickMsg = os.date(
-            `You have been temporarily banned from the game by {moderatorName} for \"{moderationEvent.reason}\". Your ban will be lifted on %A %d %B at {hour}%p.`, 
+            `You have been temporarily banned from the game by {moderatorName} for \"{moderationEvent.reason}\". Your ban will be lifted on %A %d %B at %I:%M%p.`,
             moderationEvent.details.endTimestamp
         )
         player:Kick(kickMsg)
