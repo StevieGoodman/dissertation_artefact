@@ -135,7 +135,9 @@ function service:clear(): string
     if #self._queue == 0 then
         return self.ClearResult.QueueEmpty
     else
-        self._queue = {}
+        for _, player in self._queue do
+            self:remove(player)
+        end
         return self.ClearResult.Ok
     end
 end
