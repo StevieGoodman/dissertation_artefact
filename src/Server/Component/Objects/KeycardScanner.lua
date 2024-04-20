@@ -26,7 +26,7 @@ function component:Construct()
 end
 
 function hook(player, keycardScanner)
-    local hasPerms = Knit.GetService("InteractionPermissions"):checkPermissions(player)
+    local hasPerms = Knit.GetService("InteractionPermissions"):checkPermissions(player, keycardScanner.Instance)
     if hasPerms then
         keycardScanner.light.BrickColor = ACCEPTED_COLOR
     else
