@@ -13,6 +13,11 @@ service.GetResult = {
     QueueEmpty = "QueueEmpty",
 }
 
+service.GetPlaceInQueue = {
+    Ok = "Ok",
+    NotInQueue = "NotInQueue",
+}
+
 service.AddResult = {
     Ok = "Ok",
     NotClassD = "NotClassD",
@@ -56,6 +61,18 @@ function service:get()
         return self.GetResult.QueueEmpty, {}
     else
         return self.GetResult.Ok, table.clone(self._queue)
+    end
+end
+
+--[[
+    Returns the place of a player in the test queue.
+--]]
+function service:getPlaceInQueue(player: Player): (string, number?)
+    local place = table.find(self._queue, player)
+    if place then
+        return self.GetPlaceInQueue.Ok, place
+    else
+        return self.GetPlaceInQueue.NotInQueue, nil
     end
 end
 
