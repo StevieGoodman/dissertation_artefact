@@ -12,7 +12,7 @@ return function(context, players: {Player}, reassignTeam: boolean?)
             context.Executor.Team = Teams["Class-D Personnel"]
             Knit.GetService("Respawn"):respawn(player)
         end
-        local addResult = TestQueueService:add(context.Executor)
+        local addResult = TestQueueService:add(player)
         if addResult == TestQueueService.AddResult.NotSpawnedIn then
             msg ..= `{player} is not spawned in and cannot join the test queue.`
         elseif addResult == TestQueueService.AddResult.NotClassD then

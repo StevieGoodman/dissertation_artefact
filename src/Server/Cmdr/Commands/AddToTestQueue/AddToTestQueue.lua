@@ -1,9 +1,9 @@
 return {
-    Name = "JoinTestQueue",
+    Name = "AddToTestQueue",
     Description = "Places players in the test queue",
     Group = "development",
     Aliases = {
-        "JoinQueue"
+        "AddQueue", "AddToQueue"
     },
     Args = {
         {
