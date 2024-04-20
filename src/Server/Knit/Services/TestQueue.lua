@@ -2,7 +2,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
-local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 
 local service = Knit.CreateService {
     Name = "TestQueue",
