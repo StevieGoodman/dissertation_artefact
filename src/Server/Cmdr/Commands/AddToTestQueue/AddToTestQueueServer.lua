@@ -3,13 +3,13 @@ local Teams = game:GetService("Teams")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-return function(context, players: {Player}, reassignTeam: boolean?)
+return function(_, players: {Player}, reassignTeam: boolean?)
     local TestQueueService = Knit.GetService("TestQueue")
 
     local msg = ""
     for _, player in players do
         if reassignTeam and player.Character then
-            context.Executor.Team = Teams["Class-D Personnel"]
+            player.Team = Teams["Class-D Personnel"]
             Knit.GetService("Respawn"):respawn(player)
         end
         local addResult = TestQueueService:add(player)
