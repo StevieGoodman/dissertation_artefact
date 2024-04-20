@@ -1,6 +1,6 @@
 return {
     Name = "JoinTestQueue",
-    Description = "Shows the test queue's contents",
+    Description = "Places you in the test queue",
     Group = "development",
     Aliases = {
         "JoinQueue"
