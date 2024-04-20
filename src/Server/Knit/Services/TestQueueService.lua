@@ -33,9 +33,10 @@ service.RemoveResult = {
 
 service.RequestResult = {
     Ok = "Ok",
-    NoPlayersInQueue = "NoPlayersInQueue",
+    QueueEmpty = "QueueEmpty",
     NotEnoughPlayersInQueue = "NotEnoughPlayersInQueue",
     InvalidAmount = "InvalidAmount",
+    NotResearchOrMedical = "NotResearchOrMedical",
 }
 
 service.ClearResult = {
@@ -115,22 +116,23 @@ end
     Removes a specified amount of players from the front of test queue.
     Amount must be a positive, non-zero integer.
 --]]
-function service:request(amount: number, location: string): (string, {Player})
-    local players = {}
-    if amount <= 0 then
+function service:request(requester: Player, amount: number, location: string): (string, {Player})
+    if requester.Team.Name ~= "Research Department" and requester.Team.Name ~= "Medical Department" then
+        return self.RequestResult.NotResearchOrMedical, nil
+    elseif amount <= 0 then
         return self.RequestResult.InvalidAmount, nil
     elseif #self._queue == 0 then
-        return self.RequestResult.NoPlayersInQueue, {}
-    end
-    repeat
-        local player = self._queue[1]
-        table.insert(players, player)
-        self:remove(player)
-    until #players == amount or #self._queue
-    self.newRequest:Fire(location, players)
-    if #players < amount then
-        return self.RequestResult.NotEnoughPlayersInQueue, players
+        return self.RequestResult.QueueEmpty, {}
+    elseif amount > #self._queue then
+        return self.RequestResult.NotEnoughPlayersInQueue, #self._queue
     else
+        local players = {}
+        repeat
+            local player = self._queue[1]
+            table.insert(players, player)
+            self:remove(player)
+        until #players == amount
+        self.newRequest:Fire(players, location)
         return self.RequestResult.Ok, players
     end
 end
