@@ -8,7 +8,7 @@ return function(_)
     if getResult == TestQueueService.GetResult.QueueEmpty then
         return "The test queue is empty."
     else
-        local msg = `The test queue contains {#queue} players:`
+        local msg = `The test queue contains {#queue} player(s):`
         for index, player in queue do
             local identity = Knit.GetService("Identity"):getPlayerIdentity(player)
             msg ..= `\n{index}. {player.Name} ({identity})`
