@@ -13,8 +13,10 @@ return function(context, reassignTeam: boolean?)
     if addResult == TestQueueService.AddResult.NotClassD then
         return "You must be Class-D Personnel to join the test queue!"
     elseif addResult == TestQueueService.AddResult.AlreadyInQueue then
-        return "You are already in the test queue!"
+        local place = TestQueueService:getPlaceInQueue(context.Executor)
+        return `You are already in the test queue at position number {place}.`
     else
-        return "You have been added to the test queue!"
+        local place = TestQueueService:getPlaceInQueue(context.Executor)
+        return `You have been added to the test queue at position number {place}.`
     end
 end
