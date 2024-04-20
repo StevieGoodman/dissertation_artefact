@@ -43,6 +43,10 @@ function service:getPlayerIdentity(player: Player)
     return self.identities[player]
 end
 
+function service.Client:getPlayerIdentity(_, player: Player)
+    return self.Server:getPlayerIdentity(player)
+end
+
 function service:assignIdentity(player: Player, identity: string?)
     local playerSpawnedIn = player.Character
     if not playerSpawnedIn then

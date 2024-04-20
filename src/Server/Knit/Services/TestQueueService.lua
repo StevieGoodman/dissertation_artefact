@@ -6,6 +6,11 @@ local Signal = require(ReplicatedStorage.Packages.Signal)
 
 local service = Knit.CreateService {
     Name = "TestQueue",
+    Client = {
+        playerAdded = Knit.CreateSignal(),
+        playerRemoved = Knit.CreateSignal(),
+        newRequest = Knit.CreateSignal(),
+    }
 }
 
 -- Result Enums
@@ -96,6 +101,7 @@ function service:add(player: Player): string
     else
         table.insert(self._queue, player)
         self.playerAdded:Fire(player)
+        self.Client.playerAdded:FireAll(player)
         return self.AddResult.Ok
     end
 end
@@ -107,7 +113,8 @@ function service:remove(player: Player): string
     for index, playerInQueue in self._queue do
         if player ~= playerInQueue then continue end
         table.remove(self._queue, index)
-        self.playerAdded:Fire(player)
+        self.playerRemoved:Fire(player)
+        self.Client.playerRemoved:FireAll(player)
         return self.RemoveResult.Ok
     end
     return self.RemoveResult.NotInQueue
@@ -134,6 +141,7 @@ function service:request(requester: Player, amount: number, location: string): (
             self:remove(player)
         until #players == amount
         self.newRequest:Fire(players, location)
+        self.Client.newRequest:FireAll(players, location)
         return self.RequestResult.Ok, players
     end
 end
