@@ -3,6 +3,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
+Knit.OnStart():await()
+
 local PlayerDataService = Knit.GetService("PlayerData")
 local CommandPermissionsService = Knit.GetService("CommandPermissions")
 
