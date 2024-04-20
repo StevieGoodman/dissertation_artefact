@@ -18,10 +18,10 @@ return function(context, players: {Player}, reassignTeam: boolean?)
         elseif addResult == TestQueueService.AddResult.NotClassD then
             msg ..= `{player} is not Class-D Personnel and cannot join the test queue.`
         elseif addResult == TestQueueService.AddResult.AlreadyInQueue then
-            local _, place = TestQueueService:getPlaceInQueue(context.Executor)
+            local _, place = TestQueueService:getPlaceInQueue(player)
             msg ..= `{player} is already in the test queue at position number {place}.`
         else
-            local _, place = TestQueueService:getPlaceInQueue(context.Executor)
+            local _, place = TestQueueService:getPlaceInQueue(player)
             msg ..= `{player} has been added to the test queue at position number {place}.`
         end
         msg ..= "\n"
