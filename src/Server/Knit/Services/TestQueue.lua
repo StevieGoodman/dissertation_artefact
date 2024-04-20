@@ -20,6 +20,7 @@ service.GetPlaceInQueue = {
 
 service.AddResult = {
     Ok = "Ok",
+    NotSpawnedIn = "NotSpawnedIn",
     NotClassD = "NotClassD",
     AlreadyInQueue = "AlreadyInQueue",
 }
@@ -80,8 +81,9 @@ end
     Adds a player to the test queue. Players must be Class-D Personnel to be added.
 --]]
 function service:add(player: Player): string
-    local isClassD = player.Team.Name ~= "Class-D Personnel"
-    if isClassD then
+    if not player.Character then
+        return self.AddResult.NotSpawnedIn
+    elseif player.Team.Name ~= "Class-D Personnel" then
         return self.AddResult.NotClassD
     elseif table.find(self._queue, player) then
         return self.AddResult.AlreadyInQueue

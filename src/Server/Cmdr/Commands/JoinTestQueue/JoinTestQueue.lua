@@ -1,16 +1,21 @@
 return {
     Name = "JoinTestQueue",
-    Description = "Places you in the test queue",
+    Description = "Places players in the test queue",
     Group = "development",
     Aliases = {
         "JoinQueue"
     },
     Args = {
         {
+            Type = "players",
+            Name = "target",
+            Description = "Whom to place in the queue",
+        },
+        {
             Type = "boolean",
             Name = "reassign team",
             Optional = true,
-            Description = "If you should be assigned to the Class-D Personnel team",
+            Description = "If targets players should be assigned to the Class-D Personnel team",
         },
     },
 }
