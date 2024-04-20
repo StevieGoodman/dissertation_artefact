@@ -67,7 +67,7 @@ function service:add(player: Player): string
     local isClassD = player.Team.Name ~= "Class-D Personnel"
     if isClassD then
         return self.AddResult.NotClassD
-    elseif table.find(TableUtil.Keys, player) then
+    elseif table.find(self._queue, player) then
         return self.AddResult.AlreadyInQueue
     else
         table.insert(self._queue, player)
