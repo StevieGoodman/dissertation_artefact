@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
+local Signal = require(ReplicatedStorage.Packages.Signal)
 
 local service = Knit.CreateService {
     Name = "TestQueue",
@@ -44,6 +45,8 @@ service.ClearResult = {
 
 function service:KnitInit()
     self._queue = {}
+    self.playerAdded = Signal.new()
+    self.playerRemoved = Signal.new()
 end
 
 function service:KnitStart()
@@ -89,6 +92,7 @@ function service:add(player: Player): string
         return self.AddResult.AlreadyInQueue
     else
         table.insert(self._queue, player)
+        self.playerAdded:Fire(player)
         return self.AddResult.Ok
     end
 end
@@ -100,6 +104,7 @@ function service:remove(player: Player): string
     for index, playerInQueue in self._queue do
         if player ~= playerInQueue then continue end
         table.remove(self._queue, index)
+        self.playerAdded:Fire(player)
         return self.RemoveResult.Ok
     end
     return self.RemoveResult.NotInQueue
