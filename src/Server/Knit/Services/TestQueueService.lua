@@ -53,6 +53,7 @@ end
 
 function service:KnitStart()
     Observers.observeCharacter(function(player: Player, _)
+        self:add(player)
         return function()
             self:remove(player)
         end
