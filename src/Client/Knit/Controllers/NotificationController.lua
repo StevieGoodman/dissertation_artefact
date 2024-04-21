@@ -19,7 +19,11 @@ end
 function controller:setUpMainMenuNotifications()
     self.player.CharacterAdded:Connect(function()
         task.wait()
-        self:sendNotification("RE-ENTER MAIN MENU", `Hold "M" to re-enter the main menu.`)
+        self:sendNotification("RE-ENTER MAIN MENU", `Hold "M" to re-enter the main menu`)
+        if self.player.Team.Name == "Research Department" or
+        self.player.Team.Name == "Medical Department" then
+            self:sendNotification("CREATE A NEW TEST EVENT", `Open the F2 command line and use the NewTest command\nSubject to change in future updates`)
+        end
     end)
 end
 
@@ -27,12 +31,12 @@ function controller:setUpTestQueueNotifications()
     self.testQueueService = Knit.GetService("TestQueue")
     self.testQueueService.newTest:Connect(function(requester: Player, location: string, players: {Players})
         if requester == self.player then
-            self:sendNotification("NEW TEST", `You have successfully scheduled a new test in {location} with {#players} players!`)
+            self:sendNotification("CREATED TEST EVENT", `You have scheduled a new test in {location} with {#players} players`)
         elseif table.find(players, self.player) then
-            self:sendNotification("NEW TEST", `You have been selected for a test.\nReport to {location} immediately.`)
-            self:sendNotification("REJOIN QUEUE", `To rejoin the test queue after the test, respawn as Class-D Personnel.`)
+            self:sendNotification("YOU HAVE BEEN SELECTED FOR A TEST", `Report to {location} immediately`)
+            self:sendNotification("TO REJOIN TEST QUEUE", `Respawn as Class-D Personnel`)
         elseif self.player.Team.Name == "Security Department" then
-            self:sendNotification("NEW TEST", `A new test has been scheduled in {location}.`)
+            self:sendNotification("NEW TEST EVENT CREATED", `Escort {#players} Class-D Personnel to {location}`)
         end
     end)
 end
