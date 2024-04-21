@@ -1,4 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MarketplaceService = game:GetService("MarketplaceService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
@@ -100,7 +101,9 @@ function service:add(player: Player): string
     elseif table.find(self._queue, player) then
         return self.AddResult.AlreadyInQueue
     else
-        table.insert(self._queue, player)
+        local position = if MarketplaceService:UserOwnsGamePassAsync(player.UserId, 791164853)
+        then 1 else #self._queue + 1
+        table.insert(self._queue, player, position)
         self.playerAdded:Fire(player)
         self.Client.playerAdded:FireAll(player)
         return self.AddResult.Ok
