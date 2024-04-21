@@ -5,7 +5,9 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 return function(context, amount: number, location: string)
     local TestQueueService = Knit.GetService("TestQueue")
     local requestResult, players = TestQueueService:request(context.Executor, amount, location)
-    if requestResult == TestQueueService.RequestResult.InvalidAmount then
+    if requestResult == TestQueueService.RequestResult.NotSpawnedIn then
+        return "You must be spawned in to create a test event!"
+    elseif requestResult == TestQueueService.RequestResult.InvalidAmount then
         return "You must request at least 1 player!"
     elseif requestResult == TestQueueService.RequestResult.NotResearchOrMedical then
         return "You must be reseacher or medical officer to request a test!"

@@ -39,6 +39,7 @@ service.RemoveResult = {
 service.RequestResult = {
     Ok = "Ok",
     QueueEmpty = "QueueEmpty",
+    NotSpawnedIn = "NotSpawnedIn",
     NotEnoughPlayersInQueue = "NotEnoughPlayersInQueue",
     InvalidAmount = "InvalidAmount",
     NotResearchOrMedical = "NotResearchOrMedical",
@@ -125,7 +126,9 @@ end
     Amount must be a positive, non-zero integer.
 --]]
 function service:request(requester: Player, amount: number, location: string): (string, {Player})
-    if requester.Team.Name ~= "Research Department" and requester.Team.Name ~= "Medical Department" then
+    if not requester.Character then
+        return self.RequestResult.NotSpawnedIn, nil
+    elseif requester.Team.Name ~= "Research Department" and requester.Team.Name ~= "Medical Department" then
         return self.RequestResult.NotResearchOrMedical, nil
     elseif amount <= 0 then
         return self.RequestResult.InvalidAmount, nil
