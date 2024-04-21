@@ -103,7 +103,7 @@ function service:add(player: Player): string
     else
         local position = if MarketplaceService:UserOwnsGamePassAsync(player.UserId, 791164853)
         then 1 else #self._queue + 1
-        table.insert(self._queue, player, position)
+        table.insert(self._queue, position, player)
         self.playerAdded:Fire(player)
         self.Client.playerAdded:FireAll(player)
         return self.AddResult.Ok
