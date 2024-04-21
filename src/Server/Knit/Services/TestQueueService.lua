@@ -9,7 +9,7 @@ local service = Knit.CreateService {
     Client = {
         playerAdded = Knit.CreateSignal(),
         playerRemoved = Knit.CreateSignal(),
-        newRequest = Knit.CreateSignal(),
+        newTest = Knit.CreateSignal(),
     }
 }
 
@@ -53,10 +53,13 @@ function service:KnitInit()
     self._queue = {}
     self.playerAdded = Signal.new()
     self.playerRemoved = Signal.new()
-    self.newRequest = Signal.new()
+    self.newTest = Signal.new()
 end
 
 function service:KnitStart()
+    self.newTest:Connect(function(...)
+        self:sendTestNotifications(...)
+    end)
     Observers.observeCharacter(function(player: Player, _)
         self:add(player)
         return function()
@@ -140,8 +143,8 @@ function service:request(requester: Player, amount: number, location: string): (
             table.insert(players, player)
             self:remove(player)
         until #players == amount
-        self.newRequest:Fire(players, location)
-        self.Client.newRequest:FireAll(players, location)
+        self.newTest:Fire(requester, location, players)
+        self.Client.newTest:FireAll(requester, location, players)
         return self.RequestResult.Ok, players
     end
 end
