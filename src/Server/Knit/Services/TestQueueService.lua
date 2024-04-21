@@ -57,9 +57,6 @@ function service:KnitInit()
 end
 
 function service:KnitStart()
-    self.newTest:Connect(function(...)
-        self:sendTestNotifications(...)
-    end)
     Observers.observeCharacter(function(player: Player, _)
         self:add(player)
         return function()
