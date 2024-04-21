@@ -22,7 +22,7 @@ function controller:setUpMainMenuNotifications()
         self:sendNotification("RE-ENTER MAIN MENU", `Hold "M" to re-enter the main menu`)
         if self.player.Team.Name == "Research Department" or
         self.player.Team.Name == "Medical Department" then
-            self:sendNotification("CREATE A NEW TEST EVENT", `Open the F2 command line and use the NewTest command\nSubject to change in future updates`)
+            self:sendNotification("CREATE A NEW TEST EVENT", `Open the F2 command line and use the NewTest command\nSubject to improvement in future updates`)
         end
     end)
 end
@@ -34,7 +34,7 @@ function controller:setUpTestQueueNotifications()
             self:sendNotification("CREATED TEST EVENT", `You have scheduled a new test in {location} with {#players} players`)
         elseif table.find(players, self.player) then
             self:sendNotification("YOU HAVE BEEN SELECTED FOR A TEST", `Report to {location} immediately`)
-            self:sendNotification("TO REJOIN TEST QUEUE", `Respawn as Class-D Personnel`)
+            self:sendNotification("TO REJOIN TEST QUEUE", `Respawn as Class-D Personnel\nOr use the JoinQueue command in the F2 menu`)
         elseif self.player.Team.Name == "Security Department" then
             self:sendNotification("NEW TEST EVENT CREATED", `Escort {#players} Class-D Personnel to {location}`)
         end
