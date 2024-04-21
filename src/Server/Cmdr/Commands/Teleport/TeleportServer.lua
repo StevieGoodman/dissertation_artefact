@@ -12,17 +12,15 @@ return function(_, players: {Players}, location: string | Player)
         location = teleportLocationFolder:FindFirstChild(location)
         if location == nil then
             return `No location registered with name "{location}" found.`
-        else
-            destination = location.CFrame
         end
+        destination = location.CFrame
     else
         if not location.Character then
             return `Player {location} isn't spawned in.`
-        else
-            destination =
-            location.Character.HumanoidRootPart.CFrame *
-            CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0)
         end
+        destination =
+        location.Character.HumanoidRootPart.CFrame *
+        CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0)
     end
     -- Teleport players
     local teleportService = Knit.GetService("Teleport")
