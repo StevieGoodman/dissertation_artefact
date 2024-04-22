@@ -19,6 +19,7 @@ end
 
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character)
+        character:WaitForChild("Humanoid", 5)
         ContextActionService:BindAction(
             "ZoomIn",
             function(_, state)

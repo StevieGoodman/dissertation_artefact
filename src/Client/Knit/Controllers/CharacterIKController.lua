@@ -17,6 +17,7 @@ end
 
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character)
+        character:WaitForChild("Humanoid", 5)
         self:lockCursor(character)
         RunService.Heartbeat:Connect(function()
             self:updateFacingDirection()
