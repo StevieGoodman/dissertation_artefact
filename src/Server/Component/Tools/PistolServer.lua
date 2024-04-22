@@ -13,6 +13,8 @@ function component:Construct()
     self.bulletOrigin = Waiter.get.descendant(self.Instance, { tag = "BulletOrigin" })
     self.fireSoundTemplate = Waiter.get.descendant(self.Instance, { tag = "FireSoundTemplate" })
     self.reloadSoundTemplate = Waiter.get.descendant(self.Instance, { tag = "ReloadSoundTemplate" })
+    self.muzzleFlashEmitter = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashEmitter" })
+    self.muzzleFlashLight = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashLight" })
 end
 
 function component:fire(at: Vector3, player: Player)
@@ -81,6 +83,15 @@ function component:createShotEffect(shotResult: RaycastResult)
         then ColorSequence.new(Color3.fromRGB(255, 0, 0))
         else ColorSequence.new(shotResult.Instance.Color)
     particleEmitter:Emit(10)
+    if self.muzzleFlashEmitter then
+        self.muzzleFlashEmitter:Emit(3)
+    end
+    if self.muzzleFlashLight then
+        self.muzzleFlashLight.Enabled = true
+        Promise.delay(0.1):andThen(function()
+            self.muzzleFlashLight.Enabled = false
+        end)
+    end
     -- Shot decal
     if not hitPlayer then
         local decal = Instance.new("Decal")
