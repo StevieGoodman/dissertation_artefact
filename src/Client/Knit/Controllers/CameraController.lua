@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
@@ -119,7 +120,9 @@ function controller:applyCharacterRotation()
 end
 
 function controller:zoomTo(fov: number)
+    local previousFov = self.camera.FieldOfView
     TweenService:Create(self.camera, self.tweenInfo, {FieldOfView = fov}):Play()
+    UserInputService.MouseDeltaSensitivity *= fov / previousFov
 end
 
 return controller
