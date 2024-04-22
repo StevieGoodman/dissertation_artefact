@@ -1,4 +1,5 @@
 local ContextActionService = game:GetService("ContextActionService")
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
@@ -29,7 +30,8 @@ function controller:KnitInit()
 end
 
 function controller:KnitStart()
-    Observers.observeCharacter(function(_, character)
+    Observers.observeCharacter(function(player, character)
+        if player ~= Players.LocalPlayer then return end
         character:WaitForChild("Humanoid", 5)
         self:setCameraType(self.CameraType.CharacterUnlocked)
         self.cursorController:setCursorIcon(self.cursorController.CursorIcon.Hidden)
@@ -58,11 +60,11 @@ end
 
 function controller:setCameraType(cameraType: string)
     if cameraType == self.CameraType.CursorUnlocked then
-        self.cursorController.mouseBehaviour = Enum.MouseBehavior.Default
+        self.cursorController:setMouseBehaviour(Enum.MouseBehavior.Default)
         RunService:UnbindFromRenderStep("ApplyCameraOffset")
         RunService:UnbindFromRenderStep("ApplyCharacterRotation")
     else
-        self.cursorController.mouseBehaviour = Enum.MouseBehavior.LockCenter
+        self.cursorController:setMouseBehaviour(Enum.MouseBehavior.LockCenter)
         RunService:BindToRenderStep(
             "ApplyCameraOffset",
             Enum.RenderPriority.Camera.Value,

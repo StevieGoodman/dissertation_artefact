@@ -58,6 +58,7 @@ end
 
 function component:createShotEffect(shotResult: RaycastResult)
     if not shotResult then return end
+    local hitPlayer = self:getHumanoidFromPart(shotResult.Instance) ~= nil
     local effectPart = Instance.new("Part")
     effectPart.Parent = workspace
     effectPart.Anchored = true
@@ -75,12 +76,18 @@ function component:createShotEffect(shotResult: RaycastResult)
     particleEmitter.EmissionDirection = Enum.NormalId.Front
     particleEmitter.Rate = 0
     particleEmitter.SpreadAngle = Vector2.new(45, 45)
+    particleEmitter.Color =
+        if hitPlayer
+        then ColorSequence.new(Color3.fromRGB(255, 0, 0))
+        else ColorSequence.new(shotResult.Instance.Color)
     particleEmitter:Emit(10)
     -- Shot decal
-    local decal = Instance.new("Decal")
-    decal.Parent = effectPart
-    decal.Texture = "rbxassetid://12845865907"
-    decal.Face = Enum.NormalId.Front
+    if not hitPlayer then
+        local decal = Instance.new("Decal")
+        decal.Parent = effectPart
+        decal.Texture = "rbxassetid://12845865907"
+        decal.Face = Enum.NormalId.Front
+    end
     Debris:AddItem(effectPart, 50)
 end
 

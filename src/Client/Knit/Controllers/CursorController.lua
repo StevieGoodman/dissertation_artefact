@@ -14,23 +14,20 @@ controller.CursorIcon = {
     Hidden = nil,
 }
 
-function controller:KnitInit()
-    self.mouseBehaviour = Enum.MouseBehavior.Default
-end
-
 function controller:KnitStart()
     self:setCursorIcon(self.CursorIcon.Default)
-    RunService:BindToRenderStep(
-        "ApplyCursorBehaviour",
-        Enum.RenderPriority.Camera.Value,
-        function()
-            self:_applyCursorBehaviour()
-        end
-    )
 end
 
-function controller:_applyCursorBehaviour()
-    UserInputService.MouseBehavior = self.mouseBehaviour
+function controller:setMouseBehaviour(mouseBehaviour: Enum.MouseBehavior)
+    RunService:UnbindFromRenderStep("ApplyCursorBehaviour")
+    print("Set mouse behaviour to " .. mouseBehaviour.Name)
+    RunService:BindToRenderStep(
+        "ApplyCursorBehaviour",
+        Enum.RenderPriority.Input.Value,
+        function()
+            UserInputService.MouseBehavior = mouseBehaviour
+        end
+    )
 end
 
 function controller:setCursorIcon(cursorIcon: string?)

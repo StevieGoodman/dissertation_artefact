@@ -6,6 +6,8 @@ local UserInputService = game:GetService("UserInputService")
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
+local PLAYER = Players.LocalPlayer
+
 local component = Component.new {
     Tag = "Pistol",
 }
@@ -17,6 +19,9 @@ function component:Construct()
 end
 
 function component:Start()
+    if not self.Instance:IsDescendantOf(PLAYER)
+        and not self.Instance:IsDescendantOf(PLAYER.Character) 
+        then return end
     self.Instance.Activated:Connect(function()
         self:tryFire()
     end)
