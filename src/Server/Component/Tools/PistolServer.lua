@@ -15,6 +15,7 @@ function component:Construct()
     self.reloadSoundTemplate = Waiter.get.descendant(self.Instance, { tag = "ReloadSoundTemplate" })
     self.muzzleFlashEmitter = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashEmitter" })
     self.muzzleFlashLight = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashLight" })
+    self.nextShotTime = 0
 end
 
 function component:fire(at: Vector3, player: Player)
@@ -23,6 +24,8 @@ function component:fire(at: Vector3, player: Player)
     if not bulletOrigin then return end
     if self.Instance:GetAttribute("Ammo") <= 0 then return end
     if self.Instance:GetAttribute("Reloading") then return end
+    if os.clock() < self.nextShotTime then return end
+    self.nextShotTime = os.clock() + 1 / (self.Instance:GetAttribute("RPM") / 60)
     -- Play the fire sound
     local fireSound = self.fireSoundTemplate:Clone()
     fireSound.Parent = self.fireSoundTemplate.Parent
