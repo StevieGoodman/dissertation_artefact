@@ -18,14 +18,20 @@ end
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character)
         character:WaitForChild("Humanoid", 5)
-        self:lockCursor(character)
-        RunService.Heartbeat:Connect(function()
-            self:updateFacingDirection()
-        end)
+        RunService:BindToRenderStep(
+            "CharacterIKController",
+            1,
+            function()
+                self:updateFacingDirection()
+                self:lockCursor(character)
+            end
+        )
         character.Humanoid.Died:Connect(function()
+            RunService:UnbindFromRenderStep("CharacterIKController")
             self:unlockCursor()
         end)
         return function()
+            RunService:UnbindFromRenderStep("CharacterIKController")
             self:unlockCursor()
         end
     end)
