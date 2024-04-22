@@ -6,7 +6,7 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
 
 local controller = Knit.CreateController {
-    Name = "CameraZoom",
+    Name = "Camera",
 }
 
 controller.zoomedInFov = 25
