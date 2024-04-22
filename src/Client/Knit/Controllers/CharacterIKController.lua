@@ -31,7 +31,7 @@ function controller:KnitStart()
 end
 
 function controller:lockCursor(character)
-    character.Humanoid.CameraOffset = Vector3.new(2.5, 1.5, 5)
+    character.Humanoid.CameraOffset = Vector3.new(2, 1.5, 5)
     UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
     RunService:BindToRenderStep(
         "AdjustCameraPosition",
