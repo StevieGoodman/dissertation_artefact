@@ -14,16 +14,14 @@ local component = Component.new {
 }
 
 function component:Construct()
+    Knit.OnStart():await()
     self.cursorController = Knit.GetController("Cursor")
     self.cameraController = Knit.GetController("Camera")
     self.aimAnimation = Waiter.get.child(self.Instance, "AimAnimation")
     assert(self.aimAnimation, "AimAnimation not found!")
-    Knit.OnStart():await()
 end
 
 function component:Start()
-    print(not self.Instance:IsDescendantOf(PLAYER)
-    and not self.Instance:IsDescendantOf(PLAYER.Character))
     if not self.Instance:IsDescendantOf(PLAYER)
         and not self.Instance:IsDescendantOf(PLAYER.Character)
         then return end
