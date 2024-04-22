@@ -9,7 +9,7 @@ local controller = Knit.CreateController {
     Name = "CameraZoom",
 }
 
-controller.zoomedInFov = 20
+controller.zoomedInFov = 25
 controller.tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
 
 function controller:KnitInit()

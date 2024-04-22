@@ -33,6 +33,7 @@ end
 function controller:lockCursor(character)
     character.Humanoid.CameraOffset = Vector3.new(2, 1.5, 5)
     UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
+    UserInputService.MouseIconEnabled = false
     RunService:BindToRenderStep(
         "AdjustCameraPosition",
         Enum.RenderPriority.Camera.Value,
@@ -44,6 +45,7 @@ end
 
 function controller:unlockCursor()
     UserInputService.MouseBehavior = Enum.MouseBehavior.Default
+    UserInputService.MouseIconEnabled = true
     RunService:UnbindFromRenderStep("AdjustCameraPosition")
 end
 
