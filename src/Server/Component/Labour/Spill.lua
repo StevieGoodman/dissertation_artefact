@@ -68,6 +68,7 @@ function component:Construct()
     self.proximityPrompt.ObjectText = "Spill"
     self.proximityPrompt.KeyboardKeyCode = self.keyboardKeyCode
     self.proximityPrompt.GamepadKeyCode = self.gamepadKeyCode
+    self.proximityPrompt.RequiresLineOfSight = false
     self.proximityPrompt.HoldDuration = self.holdTime
     self.proximityPrompt:AddTag("CleanPrompt")
     self.proximityPrompt.Triggered:Connect(function()

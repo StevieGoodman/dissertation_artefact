@@ -58,6 +58,7 @@ function controller:adjustCameraPosition()
     -- Add collision detection with raycasts
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.CollisionGroup = "CameraRaycast"
     raycastParams.FilterDescendantsInstances = {character}
     local depthRaycastResult = workspace:Raycast(
         character.Head.Position,
