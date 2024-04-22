@@ -10,13 +10,19 @@ local component = Component.new {
     Tag = "Pistol",
 }
 
+function component:Construct()
+    self.cursorController = Knit.GetController("Cursor")
+    self.cameraController = Knit.GetController("Camera")
+    Knit.OnStart():await()
+end
+
 function component:Start()
     self.Instance.Activated:Connect(function()
         self:tryFire()
     end)
     self.Instance.Equipped:Connect(function()
-        UserInputService.MouseIconEnabled = true
-        print(UserInputService.MouseIconEnabled)
+        self.cursorController:setCursorIcon(self.cursorController.CursorIcon.Simple)
+        self.cameraController:setCameraType(self.cameraController.CameraType.CharacterLocked)
         ContextActionService:BindAction("Reload", function(_, inputState, _)
             if inputState == Enum.UserInputState.Begin then
                 self:reload()
@@ -24,7 +30,12 @@ function component:Start()
         end, false, Enum.KeyCode.R)
     end)
     self.Instance.Unequipped:Connect(function()
-        UserInputService.MouseIconEnabled = false
+        self.cameraController:setCameraType(self.cameraController.CameraType.CharacterUnlocked)
+        local cursorIcon =
+            if Players.LocalPlayer.Character.Humanoid.Health <= 0
+            then self.cursorController.CursorIcon.Default
+            else self.cursorController.CursorIcon.Hidden
+        self.cursorController:setCursorIcon(cursorIcon)
         ContextActionService:UnbindAction("Reload")
     end)
 end
