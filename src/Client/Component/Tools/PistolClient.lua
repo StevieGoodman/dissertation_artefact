@@ -15,6 +15,8 @@ function component:Start()
         self:tryFire()
     end)
     self.Instance.Equipped:Connect(function()
+        UserInputService.MouseIconEnabled = true
+        print(UserInputService.MouseIconEnabled)
         ContextActionService:BindAction("Reload", function(_, inputState, _)
             if inputState == Enum.UserInputState.Begin then
                 self:reload()
@@ -22,6 +24,7 @@ function component:Start()
         end, false, Enum.KeyCode.R)
     end)
     self.Instance.Unequipped:Connect(function()
+        UserInputService.MouseIconEnabled = false
         ContextActionService:UnbindAction("Reload")
     end)
 end

@@ -1,6 +1,7 @@
 local ContextActionService = game:GetService("ContextActionService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
@@ -18,6 +19,7 @@ function controller:KnitInit()
 end
 
 function controller:KnitStart()
+    UserInputService.MouseIcon = "rbxassetid://17253015288"
     Observers.observeCharacter(function(_, character)
         character:WaitForChild("Humanoid", 5)
         ContextActionService:BindAction(

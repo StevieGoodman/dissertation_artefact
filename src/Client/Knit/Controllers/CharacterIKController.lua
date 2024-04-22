@@ -18,6 +18,7 @@ end
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character)
         character:WaitForChild("Humanoid", 5)
+        UserInputService.MouseIconEnabled = false
         RunService:BindToRenderStep(
             "CharacterIKController",
             Enum.RenderPriority.Camera.Value,
@@ -28,10 +29,12 @@ function controller:KnitStart()
             end
         )
         character.Humanoid.Died:Connect(function()
+            UserInputService.MouseIconEnabled = true
             RunService:UnbindFromRenderStep("CharacterIKController")
             self:unlockCursor()
         end)
         return function()
+            UserInputService.MouseIconEnabled = true
             RunService:UnbindFromRenderStep("CharacterIKController")
             self:unlockCursor()
         end
@@ -41,12 +44,11 @@ end
 function controller:lockCursor(character)
     character.Humanoid.CameraOffset = Vector3.new(2, 1.5, 5)
     UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
-    UserInputService.MouseIconEnabled = false
 end
 
 function controller:unlockCursor()
     UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-    UserInputService.MouseIconEnabled = true
+    
 end
 
 function controller:adjustCameraPosition()
