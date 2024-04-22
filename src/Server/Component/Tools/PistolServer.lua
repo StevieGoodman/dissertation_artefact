@@ -98,6 +98,7 @@ end
 function component:getShotResult(from: Vector3, at: Vector3, player: Player)
     local raycastParams = RaycastParams.new()
     raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+    raycastParams.CollisionGroup = "CameraRaycast"
     raycastParams.FilterDescendantsInstances = { player.Character }
     return workspace:Raycast(
         from,
