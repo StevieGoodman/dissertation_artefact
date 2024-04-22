@@ -20,7 +20,6 @@ end
 
 function controller:setMouseBehaviour(mouseBehaviour: Enum.MouseBehavior)
     RunService:UnbindFromRenderStep("ApplyCursorBehaviour")
-    print("Set mouse behaviour to " .. mouseBehaviour.Name)
     RunService:BindToRenderStep(
         "ApplyCursorBehaviour",
         Enum.RenderPriority.Input.Value,

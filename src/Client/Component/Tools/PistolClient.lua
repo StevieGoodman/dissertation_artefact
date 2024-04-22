@@ -35,7 +35,11 @@ function component:Start()
         end, false, Enum.KeyCode.R)
     end)
     self.Instance.Unequipped:Connect(function()
-        self.cameraController:setCameraType(self.cameraController.CameraType.CharacterUnlocked)
+        local cameraType =
+            if PLAYER.Character.Humanoid.Health <= 0
+            then self.cameraController.CameraType.CursorUnlocked
+            else self.cameraController.CameraType.CharacterUnlocked
+        self.cameraController:setCameraType(cameraType)
         local cursorIcon =
             if Players.LocalPlayer.Character.Humanoid.Health <= 0
             then self.cursorController.CursorIcon.Default
