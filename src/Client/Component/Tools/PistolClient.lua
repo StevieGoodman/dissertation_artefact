@@ -6,7 +6,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
-local Shake = require(ReplicatedStorage.Packages.Shake)
 local Waiter = require(ReplicatedStorage.Packages.WaiterV5)
 
 local PLAYER = Players.LocalPlayer
@@ -84,26 +83,32 @@ end
 
 function component:fire()
     local mousePosition = self:getMousePosition()
-    if mousePosition then
-        Knit.GetService("Gun"):fire(mousePosition)
-        local recoil = Shake.new()
-        recoil.Amplitude = 0.05
-        recoil.Frequency = 1
-        recoil.SustainTime = 0
-        recoil.FadeInTime = 0
-        recoil.FadeOutTime = 0.05
-        recoil.PositionInfluence = Vector3.zero
-        recoil.RotationInfluence = Vector3.new(1, 0.5, 0)
-        recoil:Start()
-        recoil:OnSignal(RunService.RenderStepped, function(...)
-            self:updateRecoil(...)
-        end)
-    end
+    if not mousePosition then return end
+    Knit.GetService("Gun"):fire(mousePosition)
+    local fireTime = os.clock()
+    local connection = RunService.RenderStepped:Connect(function(deltaTime)
+        local random = Random.new()
+        self:updateRecoil(fireTime, deltaTime, random)
+    end)
+    task.wait(self.Instance:GetAttribute("RecoilDuration") or 0.25)
+    connection:Disconnect()
 end
 
-function component:updateRecoil(position: Vector3, rotation: Vector3, completed: boolean)
-    if completed then return end
-    CAMERA.CFrame *= CFrame.new(position) * CFrame.Angles(rotation.X, rotation.Y, rotation.Z)
+function component:updateRecoil(fireTime, deltaTime, random: Random)
+    local duration = self.Instance:GetAttribute("RecoilDuration") or 0.25
+    local timeSinceFire = os.clock() - fireTime
+    local prevFrameTime = timeSinceFire - deltaTime
+    local previousAlpha = prevFrameTime / duration
+    local previousRecoil = math.sin(math.pi * previousAlpha)
+    local thisAlpha = timeSinceFire / duration
+    local thisRecoil = math.sin(math.pi * thisAlpha)
+    local deltaRecoil = thisRecoil - previousRecoil
+    local deltaVector = Vector3.new(
+        deltaRecoil * math.rad(random:NextNumber(2.4, 1.6)),
+        deltaRecoil * math.rad(random:NextNumber(-1, 1)),
+        0
+    )
+    CAMERA.CFrame *= CFrame.Angles(deltaVector.X, deltaVector.Y, deltaVector.Z)
 end
 
 function component:getMousePosition()
