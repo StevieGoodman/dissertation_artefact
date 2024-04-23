@@ -43,7 +43,7 @@ function component:showNext()
     task.wait(#notification.content * 0.2)
     -- Fade out
     tween = TweenService:Create(self._frame, tweenInfo, { GroupTransparency = 1 })
-    TweenService:Create(self._frame.Stroke, tweenInfo, { Transparency = 1 }):Play()
+    TweenService:Create(self._frame:WaitForChild("Stroke", 5), tweenInfo, { Transparency = 1 }):Play()
     tween:Play()
     tween.Completed:Wait()
     self._frame.Visible = false
