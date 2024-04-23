@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
@@ -5,19 +6,15 @@ local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local component = Component.new {
     Tag = "Blur",
+    Descendants = {
+        Players.LocalPlayer.PlayerGui
+    }
 }
 
 function component:Construct()
-    self.size = self.Instance:GetAttribute("Size") or 16
-    self.vfxController = Knit.GetController("VFX")
-end
-
-function component:Start()
-    self.vfxController:setBlur(self.size)
-end
-
-function component:Stop()
-    self.vfxController:setBlur(0)
+    local intensity = self.Instance:GetAttribute("Intensity") or 16
+    Knit.OnStart():await()
+    Knit.GetController("PostProcessing"):setMenuBlur(self.Instance, intensity)
 end
 
 return component

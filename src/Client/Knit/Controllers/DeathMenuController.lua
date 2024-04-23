@@ -11,30 +11,15 @@ local controller = Knit.CreateController {
 function controller:KnitInit()
     self.player = Players.LocalPlayer
     self.assetService = Knit.GetService("Asset")
-    self.vfxController = Knit.GetController("VFX")
 end
 
 function controller:KnitStart()
     Observers.observeCharacter(function(_, character: Model)
-        if character ~= self.player.Character then
-            return
-        end
+        if character ~= self.player.Character then return end
         character:WaitForChild("Humanoid").Died:Connect(function()
-            self:showDeathMenu()
+            Knit.GetController("Menu"):show("Death Menu")
         end)
     end)
-end
-
-function controller:showDeathMenu()
-    self.assetService:getAsset("DeathMenu")
-    :andThen(function(menu)
-        if menu then
-            menu.Parent = self.player.PlayerGui
-        else
-            error("Cannot find death menu. Please hold [M] to respawn.")
-        end
-    end)
-    :catch(error)
 end
 
 return controller
