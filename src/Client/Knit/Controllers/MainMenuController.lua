@@ -32,7 +32,7 @@ function controller:showMainMenu()
     :andThen(function(mainMenu)
         if mainMenu then
             mainMenu.Parent = self.player.PlayerGui
-            Knit.GetService("Respawn").removeCharacter()
+            Knit.GetService("Respawn"):removeCharacter()
         else
             self.player:Kick([[Unable to get main menu. 
                 Either the game is broken, or your internet connection is poor.
