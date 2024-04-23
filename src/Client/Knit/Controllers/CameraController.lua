@@ -28,6 +28,8 @@ function controller:KnitInit()
     self.camera = workspace.CurrentCamera
     controller.zoomedOutFov = self.camera.FieldOfView
     self.cursorController = Knit.GetController("Cursor")
+    self.applyCameraOffsetConnection = nil
+    self.applyCharacterRotationConnection = nil
 end
 
 function controller:KnitStart()
@@ -64,25 +66,24 @@ function controller:setCameraType(cameraType: string)
         self.cursorController:setMouseBehaviour(Enum.MouseBehavior.Default)
         RunService:UnbindFromRenderStep("ApplyCameraOffset")
         RunService:UnbindFromRenderStep("ApplyCharacterRotation")
+        if self.applyCameraOffsetConnection then
+            self.applyCameraOffsetConnection:Disconnect()
+        end
+        if self.applyCharacterRotationConnection then
+            self.applyCharacterRotationConnection:Disconnect()
+        end
     else
         self.cursorController:setMouseBehaviour(Enum.MouseBehavior.LockCenter)
-        RunService:BindToRenderStep(
-            "ApplyCameraOffset",
-            Enum.RenderPriority.Camera.Value,
-            function()
-                self:applyCameraOffset()
-            end
-        )
+        self.applyCameraOffsetConnection = RunService.RenderStepped:Connect(function()
+            self:applyCameraOffset()
+        end)
         if cameraType == self.CameraType.CharacterLocked then
-            RunService:BindToRenderStep(
-                "ApplyCharacterRotation",
-                Enum.RenderPriority.Camera.Value,
-                function()
-                    self:applyCharacterRotation()
-                end
-            )
+            self.applyCharacterRotationConnection = RunService.RenderStepped:Connect(function()
+                self:applyCharacterRotation()
+            end)
         else
-            RunService:UnbindFromRenderStep("ApplyCharacterRotation")
+            if not self.applyCharacterRotationConnection then return end
+            self.applyCharacterRotationConnection:Disconnect()
         end
     end
 end
