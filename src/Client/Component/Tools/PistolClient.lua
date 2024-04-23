@@ -103,9 +103,11 @@ function component:updateRecoil(fireTime, deltaTime, random: Random)
     local thisAlpha = timeSinceFire / duration
     local thisRecoil = math.sin(math.pi * thisAlpha)
     local deltaRecoil = thisRecoil - previousRecoil
+    local verticalMagnitude = math.rad(random:NextNumber(2.4, 1.6))
+    local horizontalMagnitude = math.rad(random:NextNumber(-1, 1))
     local deltaVector = Vector3.new(
-        deltaRecoil * math.rad(random:NextNumber(2.4, 1.6)),
-        deltaRecoil * math.rad(random:NextNumber(-1, 1)),
+        deltaRecoil * verticalMagnitude,
+        deltaRecoil * horizontalMagnitude,
         0
     )
     CAMERA.CFrame *= CFrame.Angles(deltaVector.X, deltaVector.Y, deltaVector.Z)
