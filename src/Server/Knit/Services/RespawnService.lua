@@ -53,6 +53,7 @@ function service:removeCharacter(player: Player)
         player.Character:Destroy()
         player.Character = nil
     end
+    player.Backpack:ClearAllChildren()
 end
 
 service.Client.removeCharacter = service.removeCharacter
