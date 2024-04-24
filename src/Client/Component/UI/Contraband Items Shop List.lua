@@ -38,6 +38,7 @@ function component:refreshList(items)
         button.Name = item.Id
         button.Parent = self.Instance
         button.Visible = true
+        button.Image = item.Icon
         Waiter.get.child(button, "Shop Price Label").Text = `${item.Price}`
         button:SetAttribute("ItemId", item.Id)
         button:SetAttribute("DisplayName", item.DisplayName)

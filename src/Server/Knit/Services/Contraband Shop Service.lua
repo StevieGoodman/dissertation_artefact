@@ -42,6 +42,7 @@ function service:registerShopItems()
             local tool = Knit.GetService("Asset"):getAsset("Keycard (Medical)", "Tool")
             tool.Parent = player.Backpack
         end,
+        Icon = "rbxassetid://17274918007",
     }
     -- Research Keycard
     self:registerShopItem {
@@ -52,6 +53,7 @@ function service:registerShopItems()
             local tool = Knit.GetService("Asset"):getAsset("Keycard (Research)", "Tool")
             tool.Parent = player.Backpack
         end,
+        Icon = "rbxassetid://17274919616",
     }
     -- Security Keycard
     self:registerShopItem {
@@ -62,6 +64,7 @@ function service:registerShopItems()
             local tool = Knit.GetService("Asset"):getAsset("Keycard (Security)", "Tool")
             tool.Parent = player.Backpack
         end,
+        Icon = "rbxassetid://17274921053",
     }
     -- Pistol
     self:registerShopItem {
@@ -72,6 +75,7 @@ function service:registerShopItems()
             local tool = Knit.GetService("Asset"):getAsset("Pistol", "Tool")
             tool.Parent = player.Backpack
         end,
+        Icon = "rbxassetid://17274938073"
     }
 end
 
