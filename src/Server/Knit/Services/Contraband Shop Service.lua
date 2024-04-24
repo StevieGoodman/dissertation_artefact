@@ -2,35 +2,37 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
-local Service = Knit.CreateService {
+local service = Knit.CreateService {
     Name = "Contraband Shop",
-    RegisterItemResult = {
-        Ok = "Ok",
-        NoId = "NoId",
-        NoDisplayName = "NoDisplayName",
-        NoPrice = "NoPrice",
-        NegativePrice = "NegativePrice",
-        NoCallback = "NoCallback",
-    },
     Client = {
-        PurchaseResult = {
-            Ok = "Ok",
-            InvalidItemId = "InvalidItemId",
-            NotEnoughMoney = "NotEnoughMoney",
-        }
+        itemRegistry = Knit.CreateProperty({})
     },
 }
 
-function Service:KnitInit()
-    self.itemRegistry = {}
+service.RegisterItemResult = {
+    Ok = "Ok",
+    NoId = "NoId",
+    NoDisplayName = "NoDisplayName",
+    NoPrice = "NoPrice",
+    NegativePrice = "NegativePrice",
+    NoCallback = "NoCallback",
+}
+
+service.Client.PurchaseResult = {
+    Ok = "Ok",
+    InvalidItemId = "InvalidItemId",
+    NotEnoughMoney = "NotEnoughMoney",
+}
+
+function service:KnitInit()
     self.moneyService = Knit.GetService("Money")
 end
 
-function Service:KnitStart()
+function service:KnitStart()
     self:registerShopItems()
 end
 
-function Service:registerShopItems()
+function service:registerShopItems()
     -- Pistol
     self:registerShopItem {
         Id = "Pistol",
@@ -43,7 +45,7 @@ function Service:registerShopItems()
     }
 end
 
-function Service:registerShopItem(itemInfo)
+function service:registerShopItem(itemInfo)
     if not itemInfo.Id then
         return self.RegisterItemResult.NoId
     elseif not itemInfo.DisplayName then
@@ -55,19 +57,21 @@ function Service:registerShopItem(itemInfo)
     elseif not itemInfo.Callback then
         return self.RegisterItemResult.NoCallback
     else
-        self.itemRegistry[itemInfo.Id] = itemInfo
+        local itemRegistry = self.Client.itemRegistry:Get()
+        itemRegistry[itemInfo.Id] = itemInfo
+        self.Client.itemRegistry:Set(itemRegistry)
         return self.RegisterItemResult.Ok
     end
 end
 
-function Service.Client:purchase(player: Player, itemId: string)
-    if not self.Server.itemRegistry[itemId] then
+function service.Client:purchase(player: Player, itemId: string)
+    if not self.itemRegistry:Get()[itemId] then
         return self.PurchaseResult.NoItem
     else
-        local price = self.Server.itemRegistry[itemId].Price
+        local price = self.itemRegistry:Get()[itemId].Price
         local result = self.Server.moneyService:remove(player, price)
         if result == self.Server.moneyService.RemoveResult.Ok then
-            self.Server.itemRegistry[itemId].Callback(player)
+            self.itemRegistry:Get()[itemId].Callback(player)
             return self.PurchaseResult.Ok
         else
             return self.PurchaseResult.NotEnoughMoney
@@ -75,4 +79,4 @@ function Service.Client:purchase(player: Player, itemId: string)
     end
 end
 
-return Service
+return service

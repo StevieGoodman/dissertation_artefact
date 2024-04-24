@@ -23,9 +23,14 @@ function component:Start()
     self.Instance.MouseButton1Click:Connect(function()
         self.contrabandShopService:purchase(self.shopItemId):andThen(function(purchaseResult)
             if purchaseResult == "Ok" then
-                self.notificationController:send("PURCHASE SUCCESSFUL", "You have successfully purchased the shop item")
+                local itemInfo = self.contrabandShopService.itemRegistry:Get()[self.shopItemId]
+                local displayName = string.lower(itemInfo.DisplayName)
+                local price = itemInfo.Price
+                self.notificationController:send("PURCHASE SUCCESSFUL", `You have successfully purchased a {displayName} for ${price}`)
             elseif purchaseResult == "NotEnoughMoney" then
-                self.notificationController:send("NOT ENOUGH MONEY", "You do not have enough money to purchase that shop item")
+                local itemInfo = self.contrabandShopService.itemRegistry:Get()[self.shopItemId]
+                local displayName = itemInfo.DisplayName
+                self.notificationController:send("NOT ENOUGH MONEY", `You do not have enough money to purchase a {displayName}`)
             elseif purchaseResult == "InvalidItemId" then
                 self.notificationController:send("INVALID SHOP ITEM ID", `{self.shopItemId} is not a valid shop item ID\nContact ithacaTheEnby immediately`)
             end
