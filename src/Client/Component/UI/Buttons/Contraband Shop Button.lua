@@ -15,24 +15,21 @@ function component:Construct()
     Knit.OnStart():await()
     self.contrabandShopService = Knit.GetService("Contraband Shop")
     self.notificationController = Knit.GetController("Notification")
-    self.shopItemId = self.Instance:GetAttribute("ShopItemId")
-    assert(self.shopItemId, "ShopItemId attribute must be set")
+    self.itemId = self.Instance:GetAttribute("ItemId")
+    self.displayName = self.Instance:GetAttribute("DisplayName")
+    self.price = self.Instance:GetAttribute("Price")
+    assert(self.itemId, "ItemId attribute must be set")
 end
 
 function component:Start()
     self.Instance.MouseButton1Click:Connect(function()
-        self.contrabandShopService:purchase(self.shopItemId):andThen(function(purchaseResult)
+        self.contrabandShopService:purchase(self.itemId):andThen(function(purchaseResult)
             if purchaseResult == "Ok" then
-                local itemInfo = self.contrabandShopService.itemRegistry:Get()[self.shopItemId]
-                local displayName = string.lower(itemInfo.DisplayName)
-                local price = itemInfo.Price
-                self.notificationController:send("PURCHASE SUCCESSFUL", `You have successfully purchased a {displayName} for ${price}`)
+                self.notificationController:send("PURCHASE SUCCESSFUL", `You have successfully purchased a {self.displayName} for ${self.price}`)
             elseif purchaseResult == "NotEnoughMoney" then
-                local itemInfo = self.contrabandShopService.itemRegistry:Get()[self.shopItemId]
-                local displayName = itemInfo.DisplayName
-                self.notificationController:send("NOT ENOUGH MONEY", `You do not have enough money to purchase a {displayName}`)
+                self.notificationController:send("NOT ENOUGH MONEY", `You do not have enough money to purchase a {self.displayName}`)
             elseif purchaseResult == "InvalidItemId" then
-                self.notificationController:send("INVALID SHOP ITEM ID", `{self.shopItemId} is not a valid shop item ID\nContact ithacaTheEnby immediately`)
+                self.notificationController:send("INVALID SHOP ITEM ID", `{self.itemId} is not a valid shop item ID\nContact ithacaTheEnby immediately`)
             end
         end)
     end)

@@ -33,14 +33,44 @@ function service:KnitStart()
 end
 
 function service:registerShopItems()
+    -- Medical Keycard
+    self:registerShopItem {
+        Id = "MedicalKeycard",
+        DisplayName = "Keycard (Medical)",
+        Price = 20,
+        Callback = function(player: Player)
+            local tool = Knit.GetService("Asset"):getAsset("Keycard (Medical)", "Tool")
+            tool.Parent = player.Backpack
+        end,
+    }
+    -- Research Keycard
+    self:registerShopItem {
+        Id = "ResearchKeycard",
+        DisplayName = "Keycard (Research)",
+        Price = 20,
+        Callback = function(player: Player)
+            local tool = Knit.GetService("Asset"):getAsset("Keycard (Research)", "Tool")
+            tool.Parent = player.Backpack
+        end,
+    }
+    -- Security Keycard
+    self:registerShopItem {
+        Id = "SecurityKeycard",
+        DisplayName = "Keycard (Security)",
+        Price = 50,
+        Callback = function(player: Player)
+            local tool = Knit.GetService("Asset"):getAsset("Keycard (Security)", "Tool")
+            tool.Parent = player.Backpack
+        end,
+    }
     -- Pistol
     self:registerShopItem {
         Id = "Pistol",
         DisplayName = "Pistol",
         Price = 50,
         Callback = function(player: Player)
-            local pistol = Knit.GetService("Asset"):getAsset("Pistol", "Tool")
-            pistol.Parent = player.Backpack
+            local tool = Knit.GetService("Asset"):getAsset("Pistol", "Tool")
+            tool.Parent = player.Backpack
         end,
     }
 end
