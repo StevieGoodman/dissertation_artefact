@@ -10,9 +10,10 @@ local service = Knit.CreateService {
     Name = "Asset",
 }
 
-function service:getAsset(name: string): Instance
+function service:getAsset(name: string, className: string?): Instance
     local result = nil
-    local asset = Waiter.waitFor.descendant(ASSETS_FOLDER, {name = name}, WAIT_PERIOD)
+    local info = if className then {name = name, className = className} else {name = name}
+    local asset = Waiter.waitFor.descendant(ASSETS_FOLDER, info, WAIT_PERIOD)
     if asset then
         result = asset:Clone()
         result.Parent = asset.Parent

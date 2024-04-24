@@ -6,7 +6,7 @@ local ProfileService = require(ReplicatedStorage.Packages.ProfileService)
 local Observers = require(ReplicatedStorage.Packages.Observers)
 
 local PROFILE_TEMPLATE = {
-    secondsPlayed = 0,
+    money = 0,
     moderationRecord = {},
 }
 
