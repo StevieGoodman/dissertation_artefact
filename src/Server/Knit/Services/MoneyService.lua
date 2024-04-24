@@ -1,9 +1,14 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local Observers = require(ReplicatedStorage.Packages.Observers)
 
 local service = Knit.CreateService {
     Name = "Money",
+    Client = {
+        money = Knit.CreateProperty(0)
+    }
 }
 
 service.AddResult = {
@@ -19,6 +24,12 @@ service.RemoveResult = {
 
 function service:KnitInit()
     self.playerDataService = Knit.GetService("PlayerData")
+end
+
+function service:KnitStart()
+    Observers.observePlayer(function(player)
+        self.Client.money:SetFor(player, self:get(player))
+    end)
 end
 
 function service:get(player: Player | number)
@@ -41,8 +52,12 @@ function service:add(player: Player | number, amount: number)
     end
 end
 
-function service:_add(profile: table, _: number, amount: number)
-    profile.Data.money += amount
+function service:_add(profile: table, userId: number, amount: number)
+    local newTotal = profile.Data.money + amount
+    profile.Data.money = newTotal
+    local player = Players:GetPlayerByUserId(userId)
+    if not player then return end
+    self.Client.money:SetFor(player, newTotal)
 end
 
 function service:remove(player: Player | number, amount: number)
@@ -62,8 +77,12 @@ function service:remove(player: Player | number, amount: number)
     end
 end
 
-function service:_remove(profile: table, _: number, amount: number)
-    profile.Data.money -= amount
+function service:_remove(profile: table, userId: number, amount: number)
+    local newTotal = profile.Data.money - amount
+    profile.Data.money = newTotal
+    local player = Players:GetPlayerByUserId(userId)
+    if not player then return end
+    self.Client.money:SetFor(player, newTotal)
 end
 
 return service

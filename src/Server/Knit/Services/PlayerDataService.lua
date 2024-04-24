@@ -12,6 +12,9 @@ local PROFILE_TEMPLATE = {
 
 local service = Knit.CreateService {
     Name = "PlayerData",
+    Client = {
+        profileUpdated = Knit.CreateSignal()
+    }
 }
 
 function service:KnitInit()
