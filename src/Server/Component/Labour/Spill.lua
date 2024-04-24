@@ -2,6 +2,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
+local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local component = Component.new {
     Tag = "Spill",
@@ -61,6 +62,7 @@ function component.setMaxSpills(amount: number)
 end
 
 function component:Construct()
+    self.moneyService = Knit.GetService("Money")
     self.random = Random.new()
     self.proximityPrompt = Instance.new("ProximityPrompt") :: ProximityPrompt
     self.proximityPrompt.Parent = self.Instance
@@ -71,8 +73,9 @@ function component:Construct()
     self.proximityPrompt.RequiresLineOfSight = false
     self.proximityPrompt.HoldDuration = self.holdTime
     self.proximityPrompt:AddTag("CleanPrompt")
-    self.proximityPrompt.Triggered:Connect(function()
+    self.proximityPrompt.Triggered:Connect(function(player: Player)
         self:hide()
+        self:rewardPlayer(player)
     end)
 end
 
@@ -101,6 +104,10 @@ function component:hide()
     self.shown = false
     self.proximityPrompt.Enabled = false
     self.lastCleanUpTime = os.clock()
+end
+
+function component:rewardPlayer(player: Player)
+    self.moneyService:add(player, 1)
 end
 
 return component

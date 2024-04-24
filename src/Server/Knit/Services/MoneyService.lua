@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
+local Timer = require(ReplicatedStorage.Packages.Timer)
 
 local service = Knit.CreateService {
     Name = "Money",
@@ -28,7 +29,15 @@ end
 
 function service:KnitStart()
     Observers.observePlayer(function(player)
+        local timer = Timer.new(5 * 60)
+        timer.Tick:Connect(function()
+            self:rewardPlayer(player)
+        end)
+        timer:Start()
         self.Client.money:SetFor(player, self:get(player))
+        return function()
+            timer:Destroy()
+        end
     end)
 end
 
@@ -83,6 +92,10 @@ function service:_remove(profile: table, userId: number, amount: number)
     local player = Players:GetPlayerByUserId(userId)
     if not player then return end
     self.Client.money:SetFor(player, newTotal)
+end
+
+function service:rewardPlayer(player: Player)
+    self:add(player, 10)
 end
 
 return service
