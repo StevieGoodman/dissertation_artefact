@@ -15,8 +15,14 @@ controller.CursorIcon = {
 }
 
 function controller:KnitStart()
+    self.cursorIcon = nil
     self:setCursorIcon(self.CursorIcon.Default)
 end
+
+function controller:getMouseBehaviour()
+    return UserInputService.MouseBehavior
+end
+
 
 function controller:setMouseBehaviour(mouseBehaviour: Enum.MouseBehavior)
     RunService:UnbindFromRenderStep("ApplyCursorBehaviour")
@@ -29,7 +35,12 @@ function controller:setMouseBehaviour(mouseBehaviour: Enum.MouseBehavior)
     )
 end
 
+function controller:getCursorIcon()
+    return self.cursorIcon
+end
+
 function controller:setCursorIcon(cursorIcon: string?)
+    self.cursorIcon = cursorIcon
     if cursorIcon == self.CursorIcon.Hidden then
         UserInputService.MouseIconEnabled = false
     else
