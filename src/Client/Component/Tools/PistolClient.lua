@@ -134,7 +134,6 @@ end
 
 function component:setUpAnimations()
     local connection = self.Instance.Parent.Humanoid.Animator.AnimationPlayed:Connect(function(animationTrack)
-        print("done")
         if animationTrack.Animation.AnimationId ~= self.aimAnimation.AnimationId then return end
         animationTrack.Looped = true
     end)
