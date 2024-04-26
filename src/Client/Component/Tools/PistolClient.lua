@@ -25,6 +25,9 @@ function component:Construct()
 end
 
 function component:Start()
+    self.Instance.Equipped:Connect(function()
+        self:setUpAnimations()
+    end)
     if not self.Instance:IsDescendantOf(PLAYER)
         and not self.Instance:IsDescendantOf(PLAYER.Character)
         then return end
@@ -42,7 +45,6 @@ end
 function component:onEquip()
     self.cursorController:setCursorIcon(self.cursorController.CursorIcon.Simple)
     self.cameraController:setCameraType(self.cameraController.CameraType.CharacterLocked)
-    self:setUpAnimations()
     ContextActionService:BindAction("Reload", function(_, inputState, _)
         if inputState == Enum.UserInputState.Begin then
             self:reload()
@@ -62,19 +64,6 @@ function component:onUnequip()
         else self.cursorController.CursorIcon.Hidden
     self.cursorController:setCursorIcon(cursorIcon)
     ContextActionService:UnbindAction("Reload")
-end
-
-function component:setUpAnimations()
-    local character = PLAYER.Character
-    if not character then return end
-    local animator = character.Humanoid.Animator
-    if not animator then return end
-    self.aimAnimationTrack = animator:LoadAnimation(self.aimAnimation)
-    self.aimAnimationTrack.Looped = true
-    self.aimAnimationTrack:Play()
-    self.Instance.Unequipped:Connect(function()
-        self.aimAnimationTrack:Stop()
-    end)
 end
 
 function component:tryFire()
@@ -141,6 +130,17 @@ end
 
 function component:reload()
     Knit.GetService("Gun"):reload()
+end
+
+function component:setUpAnimations()
+    local connection = self.Instance.Parent.Humanoid.Animator.AnimationPlayed:Connect(function(animationTrack)
+        print("done")
+        if animationTrack.Animation.AnimationId ~= self.aimAnimation.AnimationId then return end
+        animationTrack.Looped = true
+    end)
+    self.Instance.Unequipped:Connect(function()
+        connection:Disconnect()
+    end)
 end
 
 return component
