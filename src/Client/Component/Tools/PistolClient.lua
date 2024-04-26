@@ -19,6 +19,7 @@ function component:Construct()
     Knit.OnStart():await()
     self.cursorController = Knit.GetController("Cursor")
     self.cameraController = Knit.GetController("Camera")
+    self.nextShotTime = 0
     self.aimAnimation = Waiter.get.child(self.Instance, "AimAnimation")
     assert(self.aimAnimation, "AimAnimation not found!")
 end
@@ -84,6 +85,7 @@ end
 function component:fire()
     local mousePosition = self:getMousePosition()
     if not mousePosition then return end
+    if not self:canFire() then return end
     Knit.GetService("Gun"):fire(mousePosition)
     local fireTime = os.clock()
     local connection = RunService.RenderStepped:Connect(function(deltaTime)
@@ -92,6 +94,14 @@ function component:fire()
     end)
     task.wait(self.Instance:GetAttribute("RecoilDuration") or 0.25)
     connection:Disconnect()
+end
+
+function component:canFire()
+    if self.Instance:GetAttribute("Ammo") <= 0 then return false end
+    if self.Instance:GetAttribute("Reloading") then return false end
+    if os.clock() < self.nextShotTime then return false end
+    self.nextShotTime = os.clock() + 1 / (self.Instance:GetAttribute("RPM") / 60)
+    return true
 end
 
 function component:updateRecoil(fireTime, deltaTime, random: Random)
