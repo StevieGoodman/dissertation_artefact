@@ -25,9 +25,6 @@ function component:Start()
     self.Instance.Equipped:Connect(function()
         self:setUpAnimations()
     end)
-    self.Instance.Activated:Connect(function()
-        print("Activated")
-    end)
 end
 
 function component:fire(at: Vector3, player: Player)
