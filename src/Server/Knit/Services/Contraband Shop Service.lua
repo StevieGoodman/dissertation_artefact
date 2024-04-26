@@ -22,6 +22,7 @@ service.Client.PurchaseResult = {
     Ok = "Ok",
     InvalidItemId = "InvalidItemId",
     NotEnoughMoney = "NotEnoughMoney",
+    InvalidTeam = "InvalidTeam",
 }
 
 function service:KnitInit()
@@ -101,6 +102,8 @@ end
 function service.Client:purchase(player: Player, itemId: string)
     if not self.itemRegistry:Get()[itemId] then
         return self.PurchaseResult.NoItem
+    elseif player.Team.Name ~= "Class-D Personnel" then
+        return self.PurchaseResult.InvalidTeam
     else
         local price = self.itemRegistry:Get()[itemId].Price
         local result = self.Server.moneyService:remove(player, price)

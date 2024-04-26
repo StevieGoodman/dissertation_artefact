@@ -30,6 +30,8 @@ function component:Start()
                 self.notificationController:send("NOT ENOUGH MONEY", `You do not have enough money to purchase a {self.displayName}`)
             elseif purchaseResult == "InvalidItemId" then
                 self.notificationController:send("INVALID SHOP ITEM ID", `{self.itemId} is not a valid shop item ID\nContact ithacaTheEnby immediately`)
+            elseif purchaseResult == "InvalidTeam" then
+                self.notificationController:send("INVALID TEAM", `You must be Class-D Personnel to purchase items from the contraband shop`)
             end
         end)
     end)
