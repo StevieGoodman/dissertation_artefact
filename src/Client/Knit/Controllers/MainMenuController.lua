@@ -18,6 +18,7 @@ function controller:KnitInit()
     self.assetService = Knit.GetService("Asset")
     self.respawnService = Knit.GetService("Respawn")
     self.player = Players.LocalPlayer
+    self.cursorController = Knit.GetController("Cursor")
 end
 
 function controller:KnitStart()
@@ -33,6 +34,7 @@ function controller:showMainMenu()
         if mainMenu then
             mainMenu.Parent = self.player.PlayerGui
             Knit.GetService("Respawn"):removeCharacter()
+            self.cursorController:setCursorIcon(self.cursorController.CursorIcon.Default)
         else
             self.player:Kick([[Unable to get main menu. 
                 Either the game is broken, or your internet connection is poor.

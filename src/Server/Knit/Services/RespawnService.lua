@@ -30,7 +30,7 @@ function service:respawn(player: Player, as: Team?)
     local description = self:getHumanoidDescription(player.Team)
     player:LoadCharacterWithHumanoidDescription(description)
     self:giveTools(player)
-    return self.RespawnResult.Ok
+    return self.Client.RespawnResult.Ok
 end
 
 function service.Client:respawn(player: Player, as: Team?): string
@@ -57,6 +57,7 @@ end
 
 function service:removeCharacter(player: Player)
     if player.Character then
+        player.Character.Humanoid:UnequipTools()
         player.Character:Destroy()
         player.Character = nil
     end

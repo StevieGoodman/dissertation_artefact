@@ -41,6 +41,7 @@ function component:showNext()
     tween.Completed:Wait()
     -- Show for a bit
     task.wait(#notification.content * 0.2)
+    if self.Instance.Parent == nil then return end
     -- Fade out
     tween = TweenService:Create(self._frame, tweenInfo, { GroupTransparency = 1 })
     TweenService:Create(self._frame.Stroke, tweenInfo, { Transparency = 1 }):Play()

@@ -53,15 +53,16 @@ function component:onEquip()
 end
 
 function component:onUnequip()
+    local characterAlive = PLAYER.Character and PLAYER.Character.Humanoid.Health > 0
     local cameraType =
-        if PLAYER.Character.Humanoid.Health <= 0
-        then self.cameraController.CameraType.CursorUnlocked
-        else self.cameraController.CameraType.CharacterUnlocked
+        if characterAlive
+        then self.cameraController.CameraType.CharacterUnlocked
+        else self.cameraController.CameraType.CursorUnlocked
     self.cameraController:setCameraType(cameraType)
     local cursorIcon =
-        if Players.LocalPlayer.Character.Humanoid.Health <= 0
-        then self.cursorController.CursorIcon.Default
-        else self.cursorController.CursorIcon.Hidden
+        if characterAlive
+        then self.cursorController.CursorIcon.Hidden
+        else self.cursorController.CursorIcon.Default
     self.cursorController:setCursorIcon(cursorIcon)
     ContextActionService:UnbindAction("Reload")
 end
