@@ -14,6 +14,11 @@ local service = Knit.CreateService {
     Name = "Respawn",
 }
 
+service.Client.RespawnResult = {
+    Ok = "Ok",
+    PlayerSpawnedIn = "PlayerSpawnedIn",
+}
+
 function service:KnitStart()
     self.assetService = Knit.GetService("Asset")
 end
@@ -25,7 +30,16 @@ function service:respawn(player: Player, as: Team?)
     local description = self:getHumanoidDescription(player.Team)
     player:LoadCharacterWithHumanoidDescription(description)
     self:giveTools(player)
-    return `Successfully respawned {player} as a member of {as}!`
+    return self.RespawnResult.Ok
+end
+
+function service.Client:respawn(player: Player, as: Team?): string
+    if player.Character and player.Character.Humanoid.Health > 0 then
+        return self.RespawnResult.PlayerSpawnedIn
+    else
+        self.Server:respawn(player, as)
+        return self.RespawnResult.Ok
+    end
 end
 
 function service:giveTools(player: Player)
@@ -33,13 +47,6 @@ function service:giveTools(player: Player)
     for _, tool in tools do
         tool:Clone().Parent = player.Backpack
     end
-end
-
-function service.Client:respawn(player: Player, as: Team?)
-    if player.Character and player.Character.Humanoid.Health > 0 then
-        error(`Cannot respawn {player}: Character is spawned in`)
-    end
-    return self.Server:respawn(player, as)
 end
 
 function service:getHumanoidDescription(team: Team)
