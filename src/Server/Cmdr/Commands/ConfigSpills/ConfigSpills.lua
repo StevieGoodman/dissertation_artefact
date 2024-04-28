@@ -1,6 +1,7 @@
 return {
     Name        = "ConfigSpills",
     Aliases     = { "SpillsConfig" },
+    Group       = "development",
     Description = "Configures the spill respawn time",
     Args        = {
         {

@@ -1,6 +1,7 @@
 return {
     Name        = "CleanSpills",
     Aliases     = { "CleanSpill", "SpillClean", "SpillsClean" },
+    Group        = "development",
     Description = "Cleans a specific amount of spills",
     Args        = {
         {
