@@ -3,15 +3,37 @@ I would like to take the opportunity to thank the artefact's community members w
 Additionally, I would also like to Khaled for his guidance throughout the project. His advice and insight has made the project substantially more managable for me, despite various setbacks.
 
 # Abstract (250 words)
+In the past few years, multiplayer roleplay games (not to be confused with MMORPGs) have seen considerable growth on the Roblox platform. Alongside this growth, improvement in graphical fidelity has naturally followed and commercial game studios have been established around these growing communities.
+In this dissertation, an attempt is made to establish a relationship between the immersion experienced in these multiplayer roleplay games and the level of fidelity present in their roleplay environments. By performing a comparative analysis between a low-fidelity and high-fidelity environment, we found that... [TODO]
 
 # Table of Contents
 
 # Introduction (1,000 words)
 ## Motivation
+In the past few years, a collaborative writing community known as the [SCP Wiki](https://scp-wiki.wikidot.com/) has seen a considerable amount of growth. On UGC (user generated content) platforms such as Roblox and Garry's Mod, there exist popular sub-communities dedicated to multiplayer roleplay centered around the in-universe lore. Games such as SCP: Roleplay (Metamethod, 2020a) and Site 006 Roleplay (Metamethod, 2020b) have accumulated millions of individual play sessions (295 million & 8.7 million respectively) despite forming a small part of much larger UGC platforms.
+The motivation of this dissertation is to establish a relationship between the graphical fidelity of a roleplay environment and the immersion experienced by a player present in the environment. In determining the nature of any relationship, it is the objective of this research to inform future developments in the target genre to aid in creation of more popular multiplayer roleplay games.
+
 ## Background Material
+The SCP Wiki is a collaborative speculative writing community. The lore encompasses a clandestine international organisation operating beyond borders and jurisdiction. This "Foundation" is responsible for the containment, research and protection of objects, entities and phenomena that violate natural law. To provide an example, the original "SCP" is SCP-173 - a stone concrete and rebar statue that is animate and highly aggressive when unobserved, strangling or snapping the necks of nearly individuals when given the opportunity.
+
 ## Aims & Objectives
 
 # Literature Review (1,500 words)
+The first half of this literature review was submitted as part of this project's associated interim report.
+
+A solid definition of “immersion” has proven itself elusive. Taylor suggests that immersion can be broadly defined into one of two categories: “diegetic immersion, where the player is immersed in the act of playing the video game, and as intra-diegetic or situated immersion, where the player is immersed in playing the game and in the experience of the game space as a spatial and narrated space” (2002). In a study performed in 2004 by Brown & Cairns, several gamers were interviewed and an alternative definition of immersion was reached, separated into 3 distinct levels of immersion:
+1. Engagement: the player must invest time, effort and attention to the game. Barriers to attaining this level of immersion include a lack of personal interest in a game and unintuitive controls
+2. Engrossment: the player must respect the design of the game. If the player dislikes the visuals, tasks or plot of the game, it may be more difficult to achieve this level of immersion.
+3. Total Immersion: “being cut off from reality”. Barriers at this final level include empathy and atmosphere. A lack of empathy for the game characters would prevent a level of complete immersion, whereas a lack of atmosphere - sounds, visuals and other stimuli, will also prevent immersion. (Brown & Cairns, 2004)
+This work is developed upon further by Cairns et al. in 2008 in a study that attempts to establish whether or nor immersion can be measured quantitatively. Their findings show that immersion can be accurately measured using this method and that immersion is not necessarily a positive state to be in, and instead depends on emotional state (i.e. positive & negative emotions). Whilst the definition of immersion is disputed, definitions possess a few common traits among them:
+- There exists multiple level of immersion, each relying on the former to be attained
+- High levels of immersion involve a metaphorical transfer of consciousness from player to an in-game character
+- In order to reach higher levels of immersion, distractions must be kept to a minimum
+In 2005, Cheng & Cairns performed a study on the effects of incoherent game behaviour and graphical fidelity had on immersion. They discovered that instead of the users immersion being broken by these factors, immersion actually resulted in this deliberate choice going unnoticed by study participants (2005, 1274). Whilst the research explores graphical fidelity, it doesn’t explore the effects it has on presence nor does it successfully establish a relationship from graphical fidelity to immersion. In a subsequent study performed by students at the University of Saskatchewan, comparative analyses were performed on two games, each with a high graphical fidelity and low graphical fidelity variant. Their findings suggest that whilst a higher graphical fidelity does generally correlate to an improved user experience (immersion included), this is not necessarily true for all kinds of games (Gerling et al., 2013).
+This conclusion is supported by research performed by others. For example, in a 2x2 combinatorial study featuring a variation in genre and player experience, a correlation between immersion experienced by players and general appeal was established (Christou, 2014). However, it is not clear in these studies whether immersion improves a player’s experience, or vice versa. As discussed above, it has been suggested that a high degree of immersion can reduce the affect of negative impacts on player experience caused by incoherent game design and graphical fidelity. It is concluded by Cairns et al. that “existing literature suggests that social play provides more fun but less immersion.”, however no source is cited for this conclusion. Nonetheless, several reasons are offered:
+- “the presence of real others in a game can be seen as something of a distraction or interruption to an individual’s immersive experience”
+- "interactions increase enjoyment of the game but decrease immersion” (2014, 19)
+To add further dispute to this conclusion, Cairns et al. proceed to cite another publication contributed to by Cairns (..et al, 2013) in which the conclusion reached suggests that playing against a human opponent as opposed to an AI opponent increases a player’s sense of immersion. On the contrary, Cairns et al. (2014, 19) do propose that “it may also be that the other players in some sense become part of the game and interaction with them increases the immersion in the game”. Despite the contradictions, it is clear that Cairns et al. are suggesting that the effect of social presence on immersion on games is dependant on the game. Perhaps this is caused by the expectations of the user? For example, a low-fidelity multiplayer party game which is centred around whimsical social interactions may illicit higher immersion than a high-fidelity MMORPG in which social interaction can feel stiff and out-of-character for the fantasy setting of the game.
 
 # Requirements Analysis (2,000 words)
 ## Functional & Non-functional Requirements
@@ -34,6 +56,16 @@ Additionally, I would also like to Khaled for his guidance throughout the projec
 
 # Conclusion (500 words)
 
-# References
+# References & Ludography
+Metamethod (2020a) *SCP: Roleplay* [game]. Roblox: SCP | Roleplay Community. Available from https://www.roblox.com/games/5041144419/ [accessed 23 April 2024].
+Metamethod (2020b) *Site 006 Roleplay* [game]. Roblox: [:] Nova Corporation. Available from https://www.roblox.com/games/5897938254/ [accessed 23 April 2024].
+Brown, E. and Cairns, P.A. (2004) A grounded investigation of game immersion. In: CHI ’04 EA on Human Factors in Computing Systems, Vienna, Austria, 24-29 April 2004. Available from https://www.semanticscholar.org/paper/A-grounded-investigation-of-game-immersion-Brown-Cairns/f060a681224c3f4d4a1dc84c9bae074ce4a1de4b [accessed 29 January 2024].
+Cairns, P., Cox, A., Day, M., Martin, H. and Perryman, T. (2013) Who but not where: The effect of social play on immersion in digital games. Available from: https://www.semanticscholar.org/paper/Who-but-not-where:-The-effect-of-social-play-on-in-Cairns-Cox/1badf60234732234d63e49bd0e7521bbd4fc746b [accessed 31 January2024].
+Cairns, P., Cox, A. and Nordin, A. (2014) Immersion in Digital Games: Review of Gaming Experience Research. Available from https://www.semanticscholar.org/paper/Immersion-in-Digital-Games:-Review-of-Gaming-Cairns-Cox/d4ecbb0e4caebbc7c12fb3b007d970212e0e49c3[accessed 31 January 2024].
+Cheng, K. and Cairns, P.A. (2005) Behaviour, Realism and Immersion in Games. In: CHI '05 EA on Human Factors in Computing Systems, Portland, OR, USA, 2-7 April 2005. Available from https://dl.acm.org/doi/abs/10.1145/1056808.1056894?casa_token=3iz_qGa5KfgAAAAA%3AZYd7N2le00ZAbqvbSh4ya3IO3Q7VLnZPIa0YymV3RE8F63otFSxUeniR1jgL1o1ymWdP1dOt8m8 [accessed 1November 2023].
+Gerling, K.M., Birk, M., Mandryk, R.L. and Doucette, A. (2013) The Effects of Graphical Fidelity on Player Experience. Available from https://www.semanticscholar.org/paper/The-Effects-of-Graphical-Fidelity-on-Player-Gerling-Birk/3bb51629bf33219c2a18d88af7caac7f125e8fc6 [accessed 30 January 2024].
+Jennett, C., Cox, A., Cairns, P.A., Dhoparee, S., Epps, A., Tijs, T. and Walton, A. (2008) Measuring and defining the experience of immersion in games. Available from https://www.semanticscholar.org/paper/Measuring-and-defining-the-experience-of-immersion-Jennett-Cox/4d2f0179d15bf837f7e6efb9faf7bedf25cf79c8 [accessed 29 January 2024].
+Kristou, G. (2014) The interplay between immersion and appeal in video games. Available from https://www.semanticscholar.org/paper/The-interplay-between-immersion-and-appeal-in-video-Christou/08c72ce0dce71daf1aa81cd0e4c22eacefa7544d [accessed 30 January2024].
+Taylor, L.N (2002) Video games: perspective, point-of-view, and immersion. Available from https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=6a47c811ec4174dd5aa6be5eb7b8e48777eb7b42 [accessed 29 January 2024].
 
 # Appendices
