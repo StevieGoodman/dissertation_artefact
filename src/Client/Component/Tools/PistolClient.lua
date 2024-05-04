@@ -6,7 +6,6 @@ local UserInputService = game:GetService("UserInputService")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
-local Waiter = require(ReplicatedStorage.Packages.WaiterV5)
 
 local PLAYER = Players.LocalPlayer
 local CAMERA = workspace.CurrentCamera

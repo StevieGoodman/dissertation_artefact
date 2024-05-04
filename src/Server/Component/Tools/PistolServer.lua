@@ -4,7 +4,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Component = require(ReplicatedStorage.Packages.Component)
 local Promise = require(ReplicatedStorage.Packages.Promise)
 local Waiter = require(ReplicatedStorage.Packages.Waiter)
-local WaiterV5 = require(ReplicatedStorage.Packages.WaiterV5)
 
 local component = Component.new {
     Tag = "Pistol",
