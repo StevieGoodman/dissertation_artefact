@@ -16,15 +16,7 @@ function component:Construct()
     self.reloadSoundTemplate = Waiter.get.descendant(self.Instance, { tag = "ReloadSoundTemplate" })
     self.muzzleFlashEmitter = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashEmitter" })
     self.muzzleFlashLight = Waiter.get.descendant(self.Instance, { tag = "MuzzleFlashLight" })
-    self.aimAnimation = WaiterV5.get.child(self.Instance, "AimAnimation")
-    assert(self.aimAnimation, "AimAnimation not found!")
     self.nextShotTime = 0
-end
-
-function component:Start()
-    self.Instance.Equipped:Connect(function()
-        self:setUpAnimations()
-    end)
 end
 
 function component:fire(at: Vector3, player: Player)
@@ -148,19 +140,6 @@ function component:getDamageFromRange(range: number)
         local rangeBeyondLethal = range - lethalRange
         return damage * (1 - (rangeBeyondLethal / distanceRange))
     end
-end
-
-function component:setUpAnimations()
-    local humanoid = self.Instance.Parent:WaitForChild("Humanoid", 1)
-    if not humanoid then return end
-    local animator = humanoid:WaitForChild("Animator", 1)
-    if not animator then return end
-    self.aimAnimationTrack = animator:LoadAnimation(self.aimAnimation)
-    self.aimAnimationTrack.Looped = true
-    self.aimAnimationTrack:Play()
-    self.Instance.Unequipped:Connect(function()
-        self.aimAnimationTrack:Stop()
-    end)
 end
 
 return component

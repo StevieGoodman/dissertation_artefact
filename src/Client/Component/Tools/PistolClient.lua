@@ -20,14 +20,9 @@ function component:Construct()
     self.cursorController = Knit.GetController("Cursor")
     self.cameraController = Knit.GetController("Camera")
     self.nextShotTime = 0
-    self.aimAnimation = Waiter.get.child(self.Instance, "AimAnimation")
-    assert(self.aimAnimation, "AimAnimation not found!")
 end
 
 function component:Start()
-    self.Instance.Equipped:Connect(function()
-        self:setUpAnimations()
-    end)
     if not self.Instance:IsDescendantOf(PLAYER)
         and not self.Instance:IsDescendantOf(PLAYER.Character)
         then return end
@@ -131,16 +126,6 @@ end
 
 function component:reload()
     Knit.GetService("Gun"):reload()
-end
-
-function component:setUpAnimations()
-    local connection = self.Instance.Parent.Humanoid.Animator.AnimationPlayed:Connect(function(animationTrack)
-        if animationTrack.Animation.AnimationId ~= self.aimAnimation.AnimationId then return end
-        animationTrack.Looped = true
-    end)
-    self.Instance.Unequipped:Connect(function()
-        connection:Disconnect()
-    end)
 end
 
 return component
