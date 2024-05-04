@@ -1,9 +1,12 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
 local ClickButton = require(script.Parent.ClickButton)
+
+local PLAYER = Players.LocalPlayer
 
 local component = Component.new {
     Tag = "SpawnButton",
@@ -30,11 +33,10 @@ end
 
 function component:select()
     Knit.GetService("Respawn"):respawn(self.team)
-    :andThen(function()
+    PLAYER.CharacterAdded:Once(function()
         local menu = self.Instance:FindFirstAncestorOfClass("ScreenGui")
-        if menu then
-            menu:Destroy()
-        end
+        if not menu then return end
+        menu:Destroy()
     end)
 end
 
