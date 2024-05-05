@@ -9,6 +9,10 @@ local service = Knit.CreateService {
 
 service.maxDropDistance = 3
 
+function service:KnitInit()
+    self.assetService = Knit.GetService("Asset")
+end
+
 function service:KnitStart()
     Observers.observeCharacter(function(player: Player, character: Model)
         local humanoid = character:WaitForChild("Humanoid", 1)
@@ -21,7 +25,8 @@ end
 function service:dropTools(player: Player, character: Model)
     -- Get a list of all the tools the player has
     local tools = player.Backpack:GetChildren()
-    table.insert(tools, character:FindFirstChildOfClass("Tool"))
+    local equipped = character:FindFirstChildOfClass("Tool")
+    table.insert(tools, equipped)
     -- Attempt to drop each tool
     for _, tool in tools do
         local chanceToDrop = tool:GetAttribute("DropChance") or 0.5
