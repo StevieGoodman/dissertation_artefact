@@ -22,9 +22,6 @@ function component:Construct()
 end
 
 function component:Start()
-    if not self.Instance:IsDescendantOf(PLAYER)
-        and not self.Instance:IsDescendantOf(PLAYER.Character)
-        then return end
     self.Instance.Activated:Connect(function()
         self:tryFire()
     end)
