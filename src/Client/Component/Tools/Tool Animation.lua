@@ -41,6 +41,7 @@ function component:tryPlay()
 end
 
 function component:tryStop()
+    if not self.track then return end
     local character = self.tool:FindFirstAncestorWhichIsA("Model")
     if not character then
         self.track:Stop()

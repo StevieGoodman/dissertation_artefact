@@ -46,6 +46,20 @@ function service:dropTool(at: Vector3, tool: Tool)
     tool = tool:Clone() -- Even when reparented, the original despawns with the character
     tool.Parent = workspace
     tool:MoveTo(dropPosition)
+    self:addProximityPrompt(tool)
+end
+
+function service:addProximityPrompt(tool: Tool)
+    local proximityPrompt = Instance.new("ProximityPrompt")
+    proximityPrompt.ActionText = "Pick up"
+    proximityPrompt.ObjectText = tool.Name
+    proximityPrompt.HoldDuration = 0.5
+    proximityPrompt.Parent = tool.PrimaryPart or tool.Handle
+    proximityPrompt.Triggered:Once(function(player: Player)
+        if not player.Character or player.Character.Humanoid.Health <= 0 then return end
+        tool.Parent = player.Backpack
+        proximityPrompt:Destroy()
+    end)
 end
 
 return service

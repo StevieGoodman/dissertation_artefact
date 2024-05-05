@@ -12,6 +12,7 @@ local CAMERA = workspace.CurrentCamera
 
 local component = Component.new {
     Tag = "Pistol",
+    Ancestors = { PLAYER }
 }
 
 function component:Construct()
@@ -22,14 +23,16 @@ function component:Construct()
 end
 
 function component:Start()
-    self.Instance.Activated:Connect(function()
-        self:tryFire()
-    end)
-    self.Instance.Equipped:Connect(function()
+    self.Instance.Equipped:Once(function()
         self:onEquip()
+        self.activatedConnection = self.Instance.Activated:Connect(function()
+            self:tryFire()
+        end)
     end)
-    self.Instance.Unequipped:Connect(function()
+    self.Instance.Unequipped:Once(function()
         self:onUnequip()
+        if not self.activatedConnection then return end
+        self.activatedConnection:Disconnect()
     end)
 end
 
