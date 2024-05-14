@@ -1,14 +1,12 @@
-local ContextActionService = game:GetService("ContextActionService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
+local TopBarPlus = require(ReplicatedStorage.Packages.TopBarPlus)
 
-local KEYBIND_KEY           = Enum.KeyCode.M
-local KEYBIND_HOLD_DURATION = 1
-
-
+local KEYBIND_KEY = Enum.KeyCode.M
 
 local controller = Knit.CreateController {
     Name = "MainMenu"
@@ -31,6 +29,9 @@ end
 function controller:showMainMenu()
     self.assetService:getAsset("MainMenu")
     :andThen(function(mainMenu)
+        if self.icon then
+            self.icon:destroy()
+        end
         if mainMenu then
             mainMenu.Parent = self.player.PlayerGui
             Knit.GetService("Respawn"):removeCharacter()
@@ -53,28 +54,15 @@ function controller:registerKeybind(player: Players)
     if player ~= self.player then
         return
     end
-    ContextActionService:BindAction(
-        "EnterMainMenu",
-        function(_, _, inputObject: InputObject)
-            self:onKeybind(inputObject)
-        end,
-        false,
-        KEYBIND_KEY
-    )
-    return function()
-        ContextActionService:UnbindAction("EnterMainMenu")
-    end
-end
-
-function controller:onKeybind(inputObject: InputObject)
-    if inputObject.UserInputState ~= Enum.UserInputState.Begin then
-        return
-    end
-    task.wait(KEYBIND_HOLD_DURATION)
-    if inputObject.UserInputState ~= Enum.UserInputState.Begin then
-        return
-    end
-    self:showMainMenu()
+    self.icon = TopBarPlus.new()
+    self.icon
+        :setLabel("Main Menu")
+        :setImage("rbxassetid://17492921179")
+        :oneClick(true)
+        :bindEvent("selected", function()
+            self:showMainMenu()
+        end)
+        :bindToggleKey(KEYBIND_KEY)
 end
 
 return controller
