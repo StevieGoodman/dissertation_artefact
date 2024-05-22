@@ -47,13 +47,13 @@ function component:updateState(observed)
     if observed then
         self.groundController.TurnSpeedFactor = 0
         self.groundController.MoveSpeedFactor = 0
-        self.mesh:SetAttribute("DamagePerTouch", 0)
+        self.mesh:RemoveTag("DamageOnTouch")
         self.mesh.Anchored = true
         self.mesh.CanCollide = true
     else
         self.groundController.TurnSpeedFactor = 1
         self.groundController.MoveSpeedFactor = 1
-        self.mesh:SetAttribute("DamagePerTouch", -1)
+        self.mesh:AddTag("DamageOnTouch")
         self.mesh.Anchored = false
         self.mesh.CanCollide = false
     end

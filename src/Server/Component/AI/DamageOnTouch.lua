@@ -17,9 +17,13 @@ function component:Construct()
 end
 
 function component:Start()
-    self.Instance.Touched:Connect(function(part)
+    self.connection = self.Instance.Touched:Connect(function(part)
         self:tryDamageHumanoid(part)
     end)
+end
+
+function component:Stop()
+    self.connection:Disconnect()
 end
 
 function component:tryDamageHumanoid(part: BasePart)
