@@ -4,6 +4,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
+local PLAYER = Players.LocalPlayer
+
 local component = Component.new {
     Tag = "SightProbe",
     Ancestors = { workspace }
@@ -14,16 +16,19 @@ function component:Construct()
         error(`SightProbe: {self.Instance:GetFullName()} is not an attachment`)
     end
     self.observed = false
+    self.onlyCharactersObserve = self.Instance:HasTag("OnlyCharactersObserve") -- If only alive characters can observe probe
 end
 
 function component:SteppedUpdate()
-    local isInViewport = self:isInViewport()
-    local isVisible = self:isVisible()
-    if not isInViewport or not isVisible then
+    if not self:isInViewport() or not self:isVisible() or not self:canBeObserved() then
         self:tryUpdateState(false)
     else
         self:tryUpdateState(true)
     end
+end
+
+function component:canBeObserved()
+    return not self.onlyCharactersObserve or (PLAYER.Character and PLAYER.Character.Humanoid.Health > 0)
 end
 
 function component:isInViewport()

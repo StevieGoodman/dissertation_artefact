@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Component = require(ReplicatedStorage.Packages.Component)
 local Promise = require(ReplicatedStorage.Packages.Promise)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
+local Waiter = require(ReplicatedStorage.Packages.WaiterV5)
 
 local component = Component.new {
     Tag = "EnemyAI",
@@ -12,6 +13,7 @@ local component = Component.new {
 
 function component:Construct()
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
+    self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
     self.target = nil
     self.path = PathfindingService:CreatePath({
         AgentRadius = 1.5,
@@ -20,6 +22,7 @@ function component:Construct()
         AgentCanClimb = false,
         WaypointSpacing = 4,
     })
+    self.movementSFX = Waiter.get.descendant(self.Instance, "Movement SFX") :: Sound
 end
 
 function component:SteppedUpdate()
@@ -27,6 +30,17 @@ function component:SteppedUpdate()
     self.target = self:selectClosest(validTargets)
     if self.target then
         self:moveTo(self.target)
+    else
+        self.controllerManager.MovingDirection = Vector3.new()
+    end
+    -- Play movement sound effect
+    if not self.movementSFX then return end
+    if self.groundController.MoveSpeedFactor > 0 and self.controllerManager.MovingDirection.Magnitude > 0 then
+        if self.movementSFX.IsPlaying then return end
+        self.movementSFX:Play()
+    else
+        if not self.movementSFX.IsPlaying then return end
+        self.movementSFX:Stop()
     end
 end
 
@@ -48,9 +62,10 @@ end
 function component:getValidTargets()
     local targets = {}
     for _, player in game.Players:GetPlayers() do
-        if player.Character and player.Character.PrimaryPart then
-            table.insert(targets, player.Character.PrimaryPart)
-        end
+        if not player.Character then continue end
+        if not player.Character.PrimaryPart then continue end
+        if player.Character.Humanoid.Health <= 0 then continue end
+        table.insert(targets, player.Character.PrimaryPart)
     end
     targets = TableUtil.Filter(targets, function(target)
         return self:computePath(self:getPosition(), target.Position)
@@ -79,6 +94,7 @@ function component:moveTo(target: BasePart)
         local waypoint = waypoints[2]
         if waypoint then
             local direction = (waypoint.Position - self:getPosition()).Unit
+            self.controllerManager.FacingDirection = Vector3.new(direction.X, 0, direction.Z).Unit
             self.controllerManager.MovingDirection = direction
         else
             self.controllerManager.MovingDirection = Vector3.new()
