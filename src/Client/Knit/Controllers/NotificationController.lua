@@ -19,7 +19,6 @@ end
 function controller:setUpMainMenuNotifications()
     self.player.CharacterAdded:Connect(function()
         task.wait()
-        self:send("RE-ENTER MAIN MENU", `Hold "M" to re-enter the main menu`)
         if self.player.Team.Name == "Research Department" or
         self.player.Team.Name == "Medical Department" then
             self:send("CREATE A NEW TEST EVENT", `Open the F2 command line and use the NewTest command\nSubject to improvement in future updates`)
