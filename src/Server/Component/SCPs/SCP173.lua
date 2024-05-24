@@ -13,11 +13,17 @@ local component = Component.new {
 }
 
 function component:Construct()
-    self.observed = false
+    -- Constants
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
     self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
-    self.sightProbes = Waiter.get.descendants(self.Instance, "SightProbe") :: {Attachment}
     self.mesh = Waiter.get.descendant(self.Instance, "Mesh") :: MeshPart
+    self.sightProbes = Waiter.get.descendants(self.Instance, "SightProbe") :: {Attachment}
+    -- Variables
+    self.observed = false
+    -- Assertions
+    assert(self.controllerManager, `Failed to get ControllerManager for {self.Instance:GetFullName()}`)
+    assert(self.groundController, `Failed to get GroundController for {self.Instance:GetFullName()}`)
+    assert(self.mesh, `Failed to get Mesh for {self.Instance:GetFullName()}`)
 end
 
 function component:SteppedUpdate()

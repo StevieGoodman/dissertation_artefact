@@ -18,6 +18,10 @@ function component:Construct()
     self.path = self:createPath()
     -- Variables
     self.target = nil :: Vector3?
+    -- Assertions
+    assert(self.enemyAI, `Failed to get EnemyAI component for {self.Instance:GetFullName()}`)
+    assert(self.controllerManager, `Failed to get ControllerManager for {self.Instance:GetFullName()}`)
+    assert(self.groundController, `Failed to get GroundController for {self.Instance:GetFullName()}`)
 end
 
 function component:SteppedUpdate()
@@ -77,6 +81,7 @@ end
     Updates the instance's associated movement SFX based on the current movement state.
 ]=]
 function component:updateSFX()
+    if not self.movementSFX then return end
     local moving =
         self.groundController.MoveSpeedFactor > 0 and
         self.controllerManager.MovingDirection.Magnitude > 0
