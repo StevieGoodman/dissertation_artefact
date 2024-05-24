@@ -1,3 +1,4 @@
+local PathfindingService = game:GetService("PathfindingService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
@@ -14,6 +15,13 @@ function component:Construct()
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
     self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
     self.movementSFX = Waiter.get.descendant(self.Instance, "Movement SFX") :: Sound
+    self.path = PathfindingService:CreatePath({
+        AgentRadius = 1.5,
+        AgentHeight = 6,
+        AgentCanJump = false,
+        AgentCanClimb = false,
+        WaypointSpacing = 4,
+    })
     -- Variables
     self.target = nil :: Vector3?
 end
