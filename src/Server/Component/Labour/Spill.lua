@@ -15,7 +15,7 @@ component.maxSpills = 3 -- Maximum number of spills that can be shown at once
 
 component.keyboardKeyCode = Enum.KeyCode.E -- Key to press to clean up the spill
 component.gamepadKeyCode = Enum.KeyCode.ButtonX -- Gamepad button to press to clean up the spill
-component.holdTime = 1 -- Time to hold the key to clean up the spill
+component.holdTime = 5 -- Time to hold the key to clean up the spill
 
 function component.getSpillCount()
     local spills = component:GetAll()
@@ -107,7 +107,7 @@ function component:hide()
 end
 
 function component:rewardPlayer(player: Player)
-    self.moneyService:add(player, 1)
+    self.moneyService:add(player, self.Instance:GetAttribute("MoneyReward") or 1)
 end
 
 return component
