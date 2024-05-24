@@ -27,7 +27,7 @@ function component:Construct()
     self.wanderDistance = self.Instance:GetAttribute("WanderDistance") or NumberRange.new(10, 20)
     self.wanderInterval = self.Instance:GetAttribute("WanderInterval") or NumberRange.new(5, 10)
     -- Variables
-    self.timeUntilWander = 0
+    self.timeUntilWander = math.random(self.wanderInterval.Min, self.wanderInterval.Max)
     self.wanderDestinationPromise = nil
 end
 
@@ -37,7 +37,6 @@ function component:SteppedUpdate(deltaTime)
     self.timeUntilWander = math.random(self.wanderInterval.Min, self.wanderInterval.Max)
     self.wanderDestinationPromise = self:getWanderDestination()
     :andThen(function(destination)
-        print("Wandering to ", destination)
         self.pathfindingNavigation:setTarget(destination)
     end)
 end
