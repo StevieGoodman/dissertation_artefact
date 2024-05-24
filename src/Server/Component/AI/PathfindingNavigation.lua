@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Promise = require(ReplicatedStorage.Packages.Promise)
-local Waiter = require(ReplicatedStorage.Packages.Waiter)
+local Waiter = require(ReplicatedStorage.Packages.WaiterV5)
 
 local component = Component.new {
     Tag = "PathfindingNavigation",
@@ -15,13 +15,7 @@ function component:Construct()
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
     self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
     self.movementSFX = Waiter.get.descendant(self.Instance, "Movement SFX") :: Sound
-    self.path = PathfindingService:CreatePath({
-        AgentRadius = 1.5,
-        AgentHeight = 6,
-        AgentCanJump = false,
-        AgentCanClimb = false,
-        WaypointSpacing = 4,
-    })
+    self.path = self:createPath()
     -- Variables
     self.target = nil :: Vector3?
 end
@@ -32,11 +26,32 @@ function component:SteppedUpdate()
 end
 
 --[=[
+    Creates a new Path object with settings
+    @return Path -- The new Path object
+]=]
+function component:createPath()
+    return PathfindingService:CreatePath({
+        AgentRadius = self.Instance:GetAttribute("AgentRadius") or 1.5,
+        AgentHeight = self.Instance:GetAttribute("AgentHeight") or 5,
+        AgentCanJump = self.Instance:GetAttribute("AgentCanJump") or false,
+        AgentCanClimb = self.Instance:GetAttribute("AgentCanClimb")or false,
+        WaypointSpacing = self.Instance:GetAttribute("WaypointSpacing") or 4,
+    })
+end
+
+--[=[
     Changes the navigation target of the instance.
     @param target Vector3 -- The new target position
 ]=]
 function component:setTarget(target: Vector3)
     self.target = target
+end
+
+--[=[
+    Removes the navigation target of the instance.
+]=]
+function component:removeTarget()
+    self.target = nil
 end
 
 --[=[
@@ -89,13 +104,27 @@ end
 function component:computePath()
     local from = self:getPosition()
     local to = self.target
-    return Promise.new(function(resolve, reject)
+    return Promise.new(function(resolve, reject, _)
         self.path:ComputeAsync(from, to)
         if self.path.Status == Enum.PathStatus.Success then
             resolve(self.path:GetWaypoints())
         else
             reject(self.path.Status)
         end
+    end)
+end
+
+--[=[
+    Determines whether the instance can path to a target.
+    @param to Vector3 -- The target position
+    @return boolean -- Whether the instance can compute a path
+]=]
+function component:canPath(to: Vector3): boolean
+    return Promise.new(function(resolve, _, _)
+        local path = self:createPath()
+        path:ComputeAsync(self:getPosition(), to)
+        resolve(path.Status == Enum.PathStatus.Success)
+        path:Destroy()
     end)
 end
 
