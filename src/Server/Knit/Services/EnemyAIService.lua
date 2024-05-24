@@ -24,13 +24,16 @@ function service:getValidTargets(origin: {BasePart}, path: Path)
         table.insert(targets, player.Character.PrimaryPart)
     end
     targets = TableUtil.Filter(targets, function(target)
-        return self.pathfindingNavigationService:canPath(origin, target.Position, path)
+        local result
+        self.pathfindingNavigationService:canPath(origin, target.Position, path)
         :andThen(function(canPath)
-            return canPath
+            result = canPath
         end)
         :catch(function()
-            return false
+            result = false
         end)
+        :await()
+        return result
     end)
     return targets
 end
@@ -41,13 +44,34 @@ end
     @param targets {BasePart} -- A list of targets
     @return BasePart -- The closest target
 ]=]
-function service:selectClosest(origin: {Vector3}, targets: {BasePart})
+function service:selectClosest(origin: {Vector3}, targets: {BasePart}): BasePart?
     local closest = TableUtil.Reduce(targets, function(a, b)
         local previousDistance = (a.Position - origin).Magnitude
         local distance = (b.Position - self:getPosition()).Magnitude
         return if previousDistance < distance then a else b
     end)
     return closest
+end
+
+--[=[
+    Gets the best target for an enemy to attack.
+    @param origin {BasePart} -- The origin of the instance
+    @param path Path -- The path object to use
+    @return BasePart -- The best target
+]=]
+function service:getBestTarget(origin: {BasePart}, path: Path): BasePart?
+    local validTargets = self:getValidTargets(origin, path)
+    return self:selectClosest(origin, validTargets)
+end
+
+--[=[
+    Determines if there is a reachable target that can be found.
+    @param origin {BasePart} -- The origin of the instance
+    @param path Path -- The path object to use
+    @return boolean -- Whether a target can be found
+]=]
+function service:canFindTarget(origin: {BasePart}, path: Path): boolean
+    return self:getBestTarget(origin, path) ~= nil
 end
 
 return service
