@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Promise = require(ReplicatedStorage.Packages.Promise)
+local Knit = require(ReplicatedStorage.Packages.Knit)
 local Waiter = require(ReplicatedStorage.Packages.WaiterV5)
 
 local component = Component.new {
@@ -11,15 +12,16 @@ local component = Component.new {
 }
 
 function component:Construct()
+    Knit.OnStart():await()
     -- Constants
+    self.service = Knit.GetService("PathfindingNavigation")
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
     self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
     self.movementSFX = Waiter.get.descendant(self.Instance, "Movement SFX") :: Sound
-    self.path = self:createPath()
+    self.path = self.service:createPath(self.Instance)
     -- Variables
     self.target = nil :: Vector3?
     -- Assertions
-    assert(self.enemyAI, `Failed to get EnemyAI component for {self.Instance:GetFullName()}`)
     assert(self.controllerManager, `Failed to get ControllerManager for {self.Instance:GetFullName()}`)
     assert(self.groundController, `Failed to get GroundController for {self.Instance:GetFullName()}`)
 end
@@ -27,20 +29,6 @@ end
 function component:SteppedUpdate()
     self:updateMovementDirection()
     self:updateSFX()
-end
-
---[=[
-    Creates a new Path object with settings
-    @return Path -- The new Path object
-]=]
-function component:createPath()
-    return PathfindingService:CreatePath({
-        AgentRadius = self.Instance:GetAttribute("AgentRadius") or 1.5,
-        AgentHeight = self.Instance:GetAttribute("AgentHeight") or 5,
-        AgentCanJump = self.Instance:GetAttribute("AgentCanJump") or false,
-        AgentCanClimb = self.Instance:GetAttribute("AgentCanClimb")or false,
-        WaypointSpacing = self.Instance:GetAttribute("WaypointSpacing") or 4,
-    })
 end
 
 --[=[
@@ -118,23 +106,5 @@ function component:computePath()
         end
     end)
 end
-
---[=[
-    Determines whether the instance can path to a target.
-    @param to Vector3 -- The target position
-    @return boolean -- Whether the instance can compute a path
-]=]
-function component:canPath(to: Vector3): boolean
-    return Promise.new(function(resolve, _, _)
-        local path = self:createPath()
-        path:ComputeAsync(self:getPosition(), to)
-        resolve(path.Status == Enum.PathStatus.Success)
-        path:Destroy()
-    end)
-end
-
-
-
-
 
 return component
