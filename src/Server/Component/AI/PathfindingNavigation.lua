@@ -49,14 +49,19 @@ end
     Updates the movement direction of the instance's associated ControllerManager based on the target position.
 ]=]
 function component:updateMovementDirection()
+    local distanceToTarget = if self.target then (self.target - self:getPosition()).Magnitude else 0
+    if distanceToTarget <= 2 then -- Instance has arrived at the target
+        self.controllerManager.MovingDirection = Vector3.new()
+        return
+    end
     self:computePath()
     :andThen(function(waypoints)
         local waypoint = waypoints[2]
-        if waypoint then -- Player is still moving towards the target
+        if waypoint then -- Instance is still moving towards the target
             local direction = (waypoint.Position - self:getPosition()).Unit
             self.controllerManager.MovingDirection = direction
-        else -- Player has arrived at the target
-            self.controllerManager.MovingDirection = Vector3.new()
+        else -- Instance has arrived at the target
+        self.controllerManager.MovingDirection = Vector3.new()
         end
     end)
     :catch(function()

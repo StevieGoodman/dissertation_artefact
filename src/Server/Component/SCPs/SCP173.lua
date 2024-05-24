@@ -23,7 +23,7 @@ function component:Construct()
     self.mesh = Waiter.get.descendant(self.Instance, "Mesh") :: MeshPart
     self.sightProbes = Waiter.get.descendants(self.Instance, "SightProbe") :: {Attachment}
     -- Variables
-    self.observed = false
+    self.observed = true
     -- Assertions
     assert(self.controllerManager, `Failed to get ControllerManager for {self.Instance:GetFullName()}`)
     assert(self.groundController, `Failed to get GroundController for {self.Instance:GetFullName()}`)
