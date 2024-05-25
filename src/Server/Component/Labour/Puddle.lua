@@ -56,7 +56,7 @@ function component:createProximityPrompt()
     self.proximityPrompt = Instance.new("ProximityPrompt") :: ProximityPrompt
     self.proximityPrompt.Parent = self.Instance
     self.proximityPrompt.ActionText = "Clean up"
-    self.proximityPrompt.ObjectText = "Spill"
+    self.proximityPrompt.ObjectText = "Puddle"
     self.proximityPrompt.KeyboardKeyCode = self.keyboardKeyCode
     self.proximityPrompt.GamepadKeyCode = self.gamepadKeyCode
     self.proximityPrompt.RequiresLineOfSight = false
