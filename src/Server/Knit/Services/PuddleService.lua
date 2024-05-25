@@ -116,7 +116,6 @@ function service:registerGroup(config: PuddleGroupConfig)
             config.spawnInterval.Max
         )
     }
-    print(self.groups)
 end
 
 return service
