@@ -16,11 +16,32 @@ local component = Component.new {
     Ancestors = { workspace }
 }
 
+component.puddleGroupConfig = {
+    groupName = "SCP173",
+    types = {
+        {
+            colour = BrickColor.new("Bright red"),
+            transparency = 0.25,
+            moneyReward = 2,
+        },
+        {
+            colour = BrickColor.new("Black"),
+            transparency = 0,
+            moneyReward = 1,
+        },
+    },
+    spawnInterval = NumberRange.new(10, 30),
+    spawnDelay = 5,
+    maxAmount = 8,
+}
+
+
 function component:Construct()
     -- Constants
     self.controllerManager = self.Instance.ControllerManager :: ControllerManager
     self.groundController = self.Instance.ControllerManager.GroundController :: GroundController
     self.mesh = Waiter.get.descendant(self.Instance, "Mesh") :: MeshPart
+    self.puddleSource = Waiter.get.descendant(self.Instance, "PuddleSource") :: Attachment
     self.sightProbes = Waiter.get.descendants(self.Instance, "SightProbe") :: {Attachment}
     -- Variables
     self.observed = true
@@ -28,6 +49,12 @@ function component:Construct()
     assert(self.controllerManager, `Failed to get ControllerManager for {self.Instance:GetFullName()}`)
     assert(self.groundController, `Failed to get GroundController for {self.Instance:GetFullName()}`)
     assert(self.mesh, `Failed to get Mesh for {self.Instance:GetFullName()}`)
+    assert(self.puddleSource, `Failed to get PuddleSource for {self.Instance:GetFullName()}`)
+end
+
+function component:Start()
+    Knit.OnStart():await()
+    Knit.GetService("Puddle"):registerGroup(self.puddleGroupConfig)
 end
 
 function component:SteppedUpdate()
@@ -56,12 +83,14 @@ function component:updateState(observed)
         self.mesh:RemoveTag("DamageOnTouch")
         self.mesh.Anchored = true
         self.mesh.CanCollide = true
+        self.puddleSource:RemoveTag("PuddleSource")
     else
         self.groundController.TurnSpeedFactor = 1
         self.groundController.MoveSpeedFactor = 1
         self.mesh:AddTag("DamageOnTouch")
         self.mesh.Anchored = false
         self.mesh.CanCollide = false
+        self.puddleSource:AddTag("PuddleSource")
         local path = PathfindingNavigationService:createPath(self.Instance)
         local canFindTarget = EnemyAIService:canFindTarget(self:getPosition(), path)
         if canFindTarget then

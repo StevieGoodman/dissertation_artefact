@@ -50,6 +50,7 @@ function component:spawn(type: PuddleType)
         
         table.insert(self.puddles, puddle)
         puddle.Stopped:Connect(function(otherPuddle)
+            if not self then return end
             local index = table.find(self.puddles, otherPuddle)
             if index == nil then return end
             table.remove(self.puddles, index)
