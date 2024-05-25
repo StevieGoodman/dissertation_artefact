@@ -59,17 +59,17 @@ function component:getWanderDestination()
         end)
         local destination
         repeat
-            local distance = math.random(-self.wanderDistance.Min, self.wanderDistance.Max)
+            local distance = math.random(self.wanderDistance.Min, self.wanderDistance.Max)
             local angle = math.random(0, math.pi * 2)
             local offset = Vector3.new(math.cos(angle) * distance, 0, math.sin(angle) * distance)
-            local attempt = self:getPosition() + offset
-            local query = workspace:GetPartBoundsInBox(CFrame.new(attempt) , Vector3.new(2, 0.5, 2), OverlapParams.new())
-            if #query == 1 then continue end -- Only allow the instance to wander to empty floor spaces
+            local attemptPosition = self:getPosition() + offset
+            local query = workspace:GetPartBoundsInBox(CFrame.new(attemptPosition), Vector3.new(2, 0.5, 2), OverlapParams.new())
+            if #query ~= 1 then continue end -- Only allow the instance to wander to empty floor spaces
             local path = PathfindingNavigationService:createPath(self.Instance)
-            PathfindingNavigationService:canPath(self:getPosition(), attempt, path)
+            PathfindingNavigationService:canPath(self:getPosition(), attemptPosition, path)
             :andThen(function(canPath)
                 if not canPath then return end
-                destination = attempt
+                destination = attemptPosition
             end)
             task.wait()
         until cancel or destination
@@ -86,7 +86,7 @@ end
     @return Vector3 -- The position of the instance
 ]=]
 function component:getPosition()
-    return self.Instance.PrimaryPart.Position
+    return self.Instance.PrimaryPart:GetPivot().Position
 end
 
 
