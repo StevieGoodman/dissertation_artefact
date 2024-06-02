@@ -31,7 +31,7 @@ function component:Stop()
 end
 
 function component:tryInfectNearby()
-    local nearbyParts = workspace:GetPartBoundsInRadius(self.Instance.Position, self.infectionRange)
+    local nearbyParts = workspace:GetPartBoundsInRadius(self:getPosition(), self.infectionRange)
     for _, part in nearbyParts do
         self:tryInfectHumanoid(part)
     end
@@ -50,12 +50,19 @@ end
 function component:rollInfection()
     local threshold = self.INFECTION_INTERVAL / self.infectionMtb
     local roll = Random.new():NextNumber(0, 1)
-    print(roll, threshold)
     return roll < threshold
 end
 
 function component:getHumanoidFromPart(part: BasePart)
    return part.Parent:FindFirstChild("Humanoid")
+end
+
+function component:getPosition()
+    return if self.Instance:IsA("PVInstance") then
+        self.Instance:GetPivot().Position
+    elseif self.Instance:IsA("Humanoid") then
+        self.Instance.Parent:GetPivot().Position
+    else nil
 end
 
 return component

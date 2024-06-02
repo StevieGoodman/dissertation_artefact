@@ -2,10 +2,51 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local Promise = require(ReplicatedStorage.Packages.Promise)
 
-local DAMAGE_RATE = 10
-local PROGRESSION_RATE_MIN = 0.5
-local PROGRESSION_RATE_MAX = 1.5
+local AssetService
+
+local PROGRESSION_RATE = NumberRange.new(5, 10)
+local SYMPTOMS = {
+    { -- IntervalledDamage
+        chance = 0.95,
+        progressionThreshold = 100,
+        addCallback = function(humanoid)
+            humanoid:AddTag("IntervalledDamage")
+            Component.IntervalledDamage:WaitForInstance(humanoid)
+                :andThen(function(intervalledDamage)
+                    intervalledDamage
+                        :SetDamageInterval(NumberRange.new(0.5, 4))
+                        :SetDamageAmount(NumberRange.new(2, 5))
+                end)
+        end,
+        removeCallback = function(humanoid)
+            humanoid:RemoveTag("IntervalledDamage")
+        end
+    },
+    { -- Contagiousness
+        chance = 0.8,
+        progressionThreshold = NumberRange.new(20, 70),
+        addCallback = function(humanoid)
+            humanoid:SetAttribute("InfectionMtb", 20)
+            humanoid:SetAttribute("InfectionRange", 5)
+            humanoid:AddTag("SCP008Source")
+        end,
+        removeCallback = function(humanoid)
+            humanoid:RemoveTag("SCP008Source")
+        end
+    },
+    { -- Appearance change
+        chance = 0.9,
+        progressionThreshold = NumberRange.new(20, 80),
+        addCallback = function(humanoid)
+            humanoid:AddTag("Zombify")
+        end,
+        removeCallback = function(humanoid)
+            humanoid:RemoveTag("Zombify")
+        end
+    }
+}
 
 local component = Component.new {
     Tag = "SCP008Infection",
@@ -13,43 +54,38 @@ local component = Component.new {
 }
 
 function component:Construct()
+    if not self.Instance:IsA("Humanoid") then
+        self.Instance:RemoveTag(self.Tag)
+        error(`SCP008Infection component can only be attached to Humanoid instances! Instance: {self.Instance}`)
+    end
     Knit.OnStart():await()
-    self.assetService = Knit.GetService("Asset")
-    self.progression = 0
-    self.progressionRate = Random.new():NextNumber(PROGRESSION_RATE_MIN, PROGRESSION_RATE_MAX)
-    self.contagious = false
-    self.humanoidRoot = self.Instance
-    self.humanoid = self.Instance.Parent.Humanoid :: Humanoid
+    AssetService = Knit.GetService("Asset")
+    self:AddDependencies():await()
+end
+
+function component:AddDependencies()
+    return Promise.new(function(resolve, reject, cancel)
+        local promise = Component.Disease.new(self.Instance, PROGRESSION_RATE)
+            :andThen(function(disease)
+                self.disease = disease
+                resolve()
+            end)
+            :catch(reject)
+        cancel(function()
+            promise:cancel()
+        end)
+    end)
 end
 
 function component:Start()
-    print(`{self.Instance.Parent.Name} has been infected by SCP-008!`)
-end
-
-function component:SteppedUpdate(dt)
-    self.progression = self.progression + (self.progressionRate * dt)
-    self.progression = math.clamp(self.progression, 0, 100)
-    if self.progression == 100 then
-        self.humanoid:TakeDamage(DAMAGE_RATE * dt)
-    end
-    if self.progression >= 30 and not self.contagious then
-        self:makeContagious()
+    print(`{self.Instance.Parent.Name} has been infected with SCP-008!`)
+    for _, symptom in SYMPTOMS do
+        self.disease:AddSymptom(symptom)
     end
 end
 
-function component:makeContagious()
-    self.contagious = true
-    local description = self.assetService:getAsset("SCP008HumanoidDescription") :: HumanoidDescription
-    local currentDescription = self.humanoid:GetAppliedDescription()
-    local currentAccessories = currentDescription:GetAccessories(true)
-    description:SetAccessories(currentAccessories, true)
-    description.Shirt = currentDescription.Shirt
-    description.Pants = currentDescription.Pants
-    if description then
-        self.humanoid:ApplyDescription(description)
-    end
-    self.humanoidRoot:AddTag("SCP008")
+function component:Stop()
+    self.Instance:RemoveTag("Disease")
 end
-
 
 return component
