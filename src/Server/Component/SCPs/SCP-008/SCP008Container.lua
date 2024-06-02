@@ -42,9 +42,9 @@ end
 function component:setOpen(open: boolean)
     self.open = open
     if open then
-        self.Instance:AddTag("SCP008")
+        self.Instance:AddTag("SCP008Source")
     else
-        self.Instance:RemoveTag("SCP008")
+        self.Instance:RemoveTag("SCP008Source")
     end
     for _, particleEffect in self.particleEffects do
         particleEffect.Enabled = open
