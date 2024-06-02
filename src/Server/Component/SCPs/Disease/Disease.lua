@@ -88,10 +88,6 @@ end
     Because this method returns the component back, it may be chained with other methods.
 --]]
 function component:AddSymptom(symptom: DiseaseSymptom)
-    -- Calculate symptom progression threshold if it is a range
-    if typeof(symptom.progressionThreshold) == "NumberRange" then
-        symptom.progressionThreshold = Random.new():NextNumber(symptom.progressionThreshold.Min, symptom.progressionThreshold.Max)
-    end
     -- Check if the symptom will be added
     local willGetSymptom = Random.new():NextNumber(0, 1) < symptom.chance
     if not willGetSymptom then
@@ -103,6 +99,14 @@ function component:AddSymptom(symptom: DiseaseSymptom)
     return self
 end
 
+function component:WithinThreshold(value: number, threshold: number | NumberRange)
+    if typeof(threshold) == "number" then
+        return value >= threshold
+    else
+        return value >= threshold.Min and value <= threshold.Max
+    end
+end
+
 --[[
     Internal lifecycle method that updates the symptoms of the disease applied to the humanoid.
     When the progression of the disease reaches the progression threshold of a symptom, the callback to add the symptom is called.
@@ -110,10 +114,10 @@ end
 --]]
 function component:UpdateSymptoms()
     for _, symptom in self.symptomRegistry do
-        if self.progress >= symptom.progressionThreshold and not symptom.active then
+        if not symptom.active and self:WithinThreshold(self.progress, symptom.progressionThreshold) then
             symptom.active = true
             symptom.addCallback(self.Instance)
-        elseif self.progress < symptom.progressionThreshold and symptom.active then
+        elseif symptom.active and not self:WithinThreshold(self.progress, symptom.progressionThreshold) then
             symptom.active = false
             symptom.removeCallback(self.Instance)
         end
