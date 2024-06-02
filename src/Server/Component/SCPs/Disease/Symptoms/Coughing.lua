@@ -29,6 +29,9 @@ function component:Construct()
     self.intervalRange = nil
     self.lastCough = 0
     self.coughInterval = 0
+    self.Instance.Died:Connect(function()
+        self.Instance:RemoveTag(self.Tag)
+    end)
 end
 
 function component:SteppedUpdate(_)

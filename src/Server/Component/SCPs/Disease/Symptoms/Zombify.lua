@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
@@ -16,6 +17,7 @@ function component:Construct()
         error(`Zombify component can only be attached to Humanoid instances! Instance: {self.Instance}`)
     end
     self.oldHumanoidDesc = nil
+    self.player = Players:GetPlayerFromCharacter(self.Instance.Parent)
     Knit.OnStart():await()
     AssetService = Knit.GetService("Asset")
 end
@@ -31,12 +33,14 @@ function component:Start()
     if description then
         self.Instance:ApplyDescription(description)
     end
+    self.player:AddTag("DisableInventory")
 end
 
 function component:Stop()
-    if self.oldHumanoidDesc then
+    if self.oldHumanoidDesc and self.Instance ~= nil then
         self.Instance:ApplyDescription(self.oldHumanoidDesc)
     end
+    self.player:RemoveTag("DisableInventory")
 end
 
 return component
