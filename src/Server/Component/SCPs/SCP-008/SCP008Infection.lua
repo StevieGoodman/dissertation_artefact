@@ -4,8 +4,6 @@ local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Promise = require(ReplicatedStorage.Packages.Promise)
 
-local AssetService
-
 local PROGRESSION_RATE = NumberRange.new(5, 10)
 local SYMPTOMS = {
     { -- IntervalledDamage
