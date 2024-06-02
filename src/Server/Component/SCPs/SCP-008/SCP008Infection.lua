@@ -57,7 +57,6 @@ function component:Construct()
         error(`SCP008Infection component can only be attached to Humanoid instances! Instance: {self.Instance}`)
     end
     Knit.OnStart():await()
-    AssetService = Knit.GetService("Asset")
     self:AddDependencies():await()
 end
 
