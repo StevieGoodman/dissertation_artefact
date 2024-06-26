@@ -1,36 +1,37 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 
-local PlayerDataService = Knit.GetService("PlayerData")
+local BanService = Knit.GetService("Ban")
 local CommandPermissionsService = Knit.GetService("CommandPermissions")
 
 return function(context, players: {Player | number}, reason: string)
-    local message = ""
-    for _, player in players do
-        local userId = if type(player) == "number" then player else player.UserId
-        local playerName = `user ID {player}`
-        pcall(function()
-            playerName = Players:GetNameFromUserIdAsync(userId)
-        end)
-        -- Check for permissions
+    local userIds = TableUtil.Map(players, function(player)
+        local userId = if typeof(player) == "number"
+            then player
+            else player.UserId
+        return userId
+    end)
+    local kickableUserIds = TableUtil.Filter(userIds, function(userId)
         local canKick = CommandPermissionsService:comparePermissions(context.Executor.UserId, userId)
-        if not canKick then
-            message ..= `You do not have a high enough personnel class to kick {player.Name}!\n`
-            continue
-        end
-        -- Kick player
-        local updateData = {
-            service = "Moderation",
-            functionName = "logModerationEvent",
-            args = { context.Executor.UserId, "Kick", reason },
-        }
-        PlayerDataService:createProfileUpdate(userId, updateData)
-        player:Kick(`You have been kicked from this server by {context.Executor} for "{reason}".`)
-        message ..= `Successfully kicked {playerName}!\n`
+        return canKick
+    end)
+    local success, err = BanService:Ban({
+        UserIds = kickableUserIds,
+        DisplayReason = reason,
+        PrivateReason = reason,
+        Duration = BanService.KickDuration,
+    })
+    if not success then
+        return `Failed to kick players: {err}`
     end
-    message = string.sub(message, 1, -2)
-    return message
+    local message = ""
+    for _, userId in userIds do
+        local canKick = CommandPermissionsService:comparePermissions(context.Executor.UserId, userId)
+        message ..= if canKick
+            then `Kicked user ID {userId} successfully\n`
+            else `Failed to kick user ID {userId}: Insufficient personnel class\n`
+    end
+    return string.sub(message, 1, -2)
 end
-

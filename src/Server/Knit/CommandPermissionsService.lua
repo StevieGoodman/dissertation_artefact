@@ -1,5 +1,6 @@
 local GroupService = game:GetService("GroupService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
@@ -21,6 +22,10 @@ function service:checkPermissions(player: Player, commandGroup: string)
         print(`{player.Name} is a test player account. Their permission has been approved!`)
         return true
     end
+    if RunService:IsStudio() then
+        print(`Testing in Studio. Permission has been approved!`)
+        return true
+    end
     if not commandGroup then return true end
     local rank = player:GetRankInGroup(GROUP_ID)
     local requiredRank = PERMS_TABLE[commandGroup]
@@ -35,7 +40,12 @@ end
     true if player1 has higher permissions than player2.
 --]]
 function service:comparePermissions(playerId1: number, playerId2: number): boolean
+    if RunService:IsStudio() then
+        print(`Testing in Studio. Permission has been approved!`)
+        return true
+    end
     if playerId1 <= 0 then
+        print(`User ID {playerId1} is a test player account. Their permission has been approved!`)
         return true
     end
     local player1Rank = 0
