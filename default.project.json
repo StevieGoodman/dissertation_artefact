@@ -2,6 +2,7 @@
     "name": "Site 74",
 
     "tree": {
+        "$ignoreUnknownInstances": true,
         "$className": "DataModel",
 
         "ReplicatedStorage": {

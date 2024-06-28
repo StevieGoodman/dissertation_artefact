@@ -9,7 +9,8 @@ local component = Component.new {
 }
 
 function component:Construct()
-    self.particleEffects = Waiter.get.descendants(self.Instance, "ParticleFX")
+    self.particleEffects = Waiter.get.descendants(self.Instance, "ParticleFX") :: {ParticleEmitter}
+    self.soundEffects = Waiter.get.descendants(self.Instance, "SoundFX") :: {AudioPlayer}
     self.open = false
 end
 
@@ -48,6 +49,13 @@ function component:setOpen(open: boolean)
     end
     for _, particleEffect in self.particleEffects do
         particleEffect.Enabled = open
+    end
+    for _, soundEffect in self.soundEffects do
+        if open then
+            soundEffect:Play()
+        else
+            soundEffect:Stop()
+        end
     end
 end
 
