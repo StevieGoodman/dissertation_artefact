@@ -6,6 +6,7 @@
         "$className": "DataModel",
 
         "ReplicatedStorage": {
+            "$ignoreUnknownInstances": true,
             "$className": "ReplicatedStorage",
 
             "$path": "src/Shared",
