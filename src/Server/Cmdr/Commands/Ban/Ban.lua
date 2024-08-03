@@ -1,8 +1,8 @@
 return {
-    Name = "TempBan",
+    Name = "Ban",
     Description = "Bans a set of players from the game for a set period of time",
     Group = "moderation",
-    Aliases = { "tban", "temporaryban", "bantemp", "bant", "bantemporary" },
+    Aliases = { "banish" },
     Args = {
         {
             Type = "players @ playerIds # integers",

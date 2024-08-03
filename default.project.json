@@ -2,22 +2,27 @@
     "name": "Site 74",
 
     "tree": {
+        "$ignoreUnknownInstances": true,
         "$className": "DataModel",
 
         "ReplicatedStorage": {
             "$className": "ReplicatedStorage",
 
+            "$path": "src/Shared",
+
             "Packages": {
                 "$path": "Packages"
             }
         },
+
         "ServerScriptService": {
             "$className": "ServerScriptService",
             "$path": "src/Server"
         },
+
         "StarterPlayer": {
             "$className": "StarterPlayer",
-            
+
             "StarterPlayerScripts": {
                 "$className": "StarterPlayerScripts",
                 "$path": "src/Client"

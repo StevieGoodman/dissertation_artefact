@@ -1,41 +1,37 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
 
-Knit.OnStart():await()
-
-local PlayerDataService = Knit.GetService("PlayerData")
+local BanService = Knit.GetService("Ban")
 local CommandPermissionsService = Knit.GetService("CommandPermissions")
 
-function ban(playerId: number, moderator: Player, reason: string, endTimestamp: number)
-    local updateData = {
-        service = "Moderation",
-        functionName = "logModerationEvent",
-        args = { moderator.UserId, "Ban", reason, { endTimestamp = endTimestamp } },
-    }
-    PlayerDataService:createProfileUpdate(playerId, updateData)
-end
-
 return function(context, players: {Player | number}, duration: number, reason: string)
-    local message = ""
-    for _, player in players do
-        local userId = if type(player) == "number" then player else player.UserId
-        local playerName = `user ID {player}`
-        pcall(function()
-            playerName = Players:GetNameFromUserIdAsync(userId)
-        end)
-        -- Check permissions
-        local canKick = CommandPermissionsService:comparePermissions(context.Executor.UserId, userId)
-        if not canKick then
-            message ..= `You do not have a high enough personnel class to ban {player.Name}!\n`
-            continue
-        end
-        local endTimestamp = os.time() + duration
-        ban(userId, context.Executor, reason, endTimestamp)
-        message ..= `Successfully banned {playerName}!\n`
+    local userIds = TableUtil.Map(players, function(player)
+        local userId = if typeof(player) == "number"
+            then player
+            else player.UserId
+        return userId
+    end)
+    local bannableUserIds = TableUtil.Filter(userIds, function(userId)
+        local canBan = CommandPermissionsService:comparePermissions(context.Executor.UserId, userId)
+        return canBan
+    end)
+    local success, err = BanService:Ban({
+        UserIds = bannableUserIds,
+        DisplayReason = reason,
+        PrivateReason = reason,
+        Duration = duration,
+    })
+    if not success then
+        return `Failed to ban players: {err}`
     end
-    message = string.sub(message, 1, -2)
-    return message
+    local message = ""
+    for _, userId in userIds do
+        local canKick = CommandPermissionsService:comparePermissions(context.Executor.UserId, userId)
+        message ..= if canKick
+            then `Banned user ID {userId} successfully\n`
+            else `Failed to ban user ID {userId}: Insufficient personnel class\n`
+    end
+    return string.sub(message, 1, -2)
 end
-
