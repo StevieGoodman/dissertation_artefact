@@ -3,6 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local Knit = require(ReplicatedStorage.Packages.Knit)
+local WaiterV5 = require(ReplicatedStorage.Packages.WaiterV5)
 
 local AssetService = Knit.GetService("Asset")
 
@@ -24,6 +25,7 @@ function SCP500:Construct()
     self.Instance = self.Instance :: Tool
     self.RespawnCFrame = self.Instance:GetPivot()
     self.RespawnParent = self.Instance.Parent
+    self.UseSound = WaiterV5.get.descendant(self.Instance, "UseSound") :: Sound
 end
 
 function SCP500:Start()
@@ -43,6 +45,8 @@ function SCP500:Use()
     if player == nil then return end
     local humanoid = self.Instance.Parent.Humanoid
     humanoid:RemoveTag("SCP008Infection")
+    if self.UseSound == nil then return end
+    self.UseSound:Play()
 end
 
 return SCP500
