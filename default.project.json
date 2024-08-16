@@ -12,7 +12,8 @@
             "$path": "src/Shared",
 
             "Packages": {
-                "$path": "Packages"
+                "$path": "Packages",
+                "$ignoreUnknownInstances": true
             }
         },
 

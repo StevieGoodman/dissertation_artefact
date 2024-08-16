@@ -35,7 +35,6 @@ function component:SetDamageAmount(damageAmount: number | NumberRange)
     if typeof(damageAmount) == "NumberRange" then
         damageAmount = math.random(damageAmount.Min, damageAmount.Max)
     end
-    damageAmount = math.clamp(damageAmount, 0, math.huge)
     self.damageAmount = damageAmount
     return self
 end
@@ -44,12 +43,16 @@ end
     Factory method for setting the interval between damage applications.
     Because this method returns the component back, it may be chained with other methods.
 --]]
-function component:SetDamageInterval(damageRate: number | NumberRange)
-    if typeof(damageRate) == "NumberRange" then
-        damageRate = math.random(damageRate.Min, damageRate.Max)
+function component:SetDamageInterval(damageInterval: number | NumberRange)
+    if typeof(damageInterval) == "NumberRange" then
+        damageInterval = math.random(damageInterval.Min, damageInterval.Max)
     end
-    damageRate = math.clamp(damageRate, 0, math.huge)
-    self.damageRate = damageRate
+    damageInterval = math.clamp(damageInterval, 0, math.huge)
+    self.damageInterval = damageInterval
+    self.timer:Disconnect()
+    self.timer = Timer.Simple(self.damageInterval, function()
+        self.Instance.Health -= self.damageAmount
+    end)
     return self
 end
 

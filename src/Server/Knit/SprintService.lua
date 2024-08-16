@@ -1,5 +1,4 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StarterPlayer = game:GetService("StarterPlayer")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 
@@ -16,12 +15,12 @@ end
 
 function service.Client:sprint(player: Player)
     local humanoid = getHumanoidFromPlayer(player)
-    humanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed * 2
+    humanoid.WalkSpeed *= 2
 end
 
 function service.Client:walk(player: Player)
     local humanoid = getHumanoidFromPlayer(player)
-    humanoid.WalkSpeed = StarterPlayer.CharacterWalkSpeed
+    humanoid.WalkSpeed /= 2
 end
 
 return service

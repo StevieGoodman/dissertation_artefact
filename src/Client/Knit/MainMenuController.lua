@@ -3,7 +3,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Knit = require(ReplicatedStorage.Packages.Knit)
 local Observers = require(ReplicatedStorage.Packages.Observers)
-local TopBarPlus = require(ReplicatedStorage.Packages.TopBarPlus)
+local TopbarPlus = require(ReplicatedStorage.Packages.TopbarPlus)
 
 local PLAYER = Players.LocalPlayer
 local KEYBIND_KEY = Enum.KeyCode.M
@@ -40,13 +40,13 @@ function controller:showMainMenu()
             Knit.GetService("Respawn"):removeCharacter()
             self.cursorController:setCursorIcon(self.cursorController.CursorIcon.Default)
         else
-            PLAYER:Kick([[Unable to get main menu. 
+            PLAYER:Kick([[Unable to get main menu.
                 Either the game is broken, or your internet connection is poor.
                 Please contact ithacaTheEnby if this issue persists.1]])
         end
     end)
     :catch(function(err)
-        PLAYER:Kick([[Unable to get main menu. 
+        PLAYER:Kick([[Unable to get main menu.
         Either the game is broken, or your internet connection is poor.
         Please contact ithacaTheEnby if this issue persists.]])
         error(err)
@@ -57,7 +57,7 @@ function controller:registerKeybind(player: Player)
     if player ~= PLAYER then
         return
     end
-    self.icon = TopBarPlus.new()
+    self.icon = TopbarPlus.new()
     self.icon
         :setLabel("Press M for main menu")
         :oneClick(true)
