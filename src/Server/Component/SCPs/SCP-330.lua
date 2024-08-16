@@ -2,7 +2,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Component = require(ReplicatedStorage.Packages.Component)
 local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
-local Timer = require(ReplicatedStorage.Packages.Timer)
 local Trove = require(ReplicatedStorage.Packages.Trove)
 local Waiter = require(ReplicatedStorage.Packages.WaiterV6)
 
@@ -13,8 +12,10 @@ local SCP330 = Component.new {
     Ancestors = { workspace },
     Extensions = {{
         ShouldConstruct = function(self)
-            local prompt =  Waiter.getDescendant(self.Instance, "ProximityPrompt", "ClassName")
-            assert(prompt, `SCP-330 is missing a ProximityPrompt. ({self.Instance:GetFullName()})`)
+            local prompt = Waiter.getDescendant(self.Instance, "ProximityPrompt", "ClassName")
+            assert(prompt ~= nil, `SCP-330 is missing a ProximityPrompt. ({self.Instance:GetFullName()})`)
+            local candy = Waiter.getDescendant(ReplicatedStorage.Assets, "SCP330Candy")
+            assert(candy ~= nil, `SCP-330 is missing a candy asset. ({self.Instance:GetFullName()})`)
             return true
         end,
     }},
@@ -23,6 +24,7 @@ local SCP330 = Component.new {
 function SCP330:Construct()
     self.Trove = Trove.new()
     self.Prompt = Waiter.getDescendant(self.Instance, "ProximityPrompt", "ClassName") :: ProximityPrompt
+    self.CandyTemplate = Waiter.getDescendant(ReplicatedStorage.Assets, "SCP330Candy") :: Tool
 end
 
 function SCP330:Start()
@@ -48,6 +50,8 @@ function SCP330:OnInteract(player: Player)
 end
 
 function SCP330:GiveCandy(player: Player)
+    local candy = self.CandyTemplate:Clone()
+    candy.Parent = player.Backpack
 end
 
 function SCP330:Mutilate(player: Player)
@@ -58,6 +62,7 @@ function SCP330:Mutilate(player: Player)
     for _, hand in hands do
         hand.CanCollide = true
         local motor6d = Waiter.getChild(hand, "Motor6D", "ClassName") :: Motor6D
+        if motor6d == nil then continue end
         motor6d:Destroy()
     end
 
