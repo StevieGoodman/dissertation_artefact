@@ -22,12 +22,12 @@ function SCP330Candy:Start()
     self.Instance.Activated:Connect(function()
         local character = self.Instance.Parent
         local player = Players:GetPlayerFromCharacter(character)
-        self.CandyType.EffectStartFn(player, character, self.Instance)
+        local parameters = table.pack(self.CandyType.EffectStartFn(player, character, self.Instance))
         self.Instance:Destroy()
         if self.CandyType.EffectDuration == nil or self.CandyType.EffectEndFn == nil then return end
         task.wait(self.CandyType.EffectDuration)
         if player == nil or character == nil then return end
-        self.CandyType.EffectEndFn(player, character)
+        self.CandyType.EffectEndFn(player, character, table.unpack(parameters))
     end)
 end
 
