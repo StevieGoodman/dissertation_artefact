@@ -35,7 +35,6 @@ function component:SetDamageAmount(damageAmount: number | NumberRange)
     if typeof(damageAmount) == "NumberRange" then
         damageAmount = math.random(damageAmount.Min, damageAmount.Max)
     end
-    damageAmount = math.clamp(damageAmount, 0, math.huge)
     self.damageAmount = damageAmount
     return self
 end
