@@ -1,23 +1,20 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local TableUtil = require(ReplicatedStorage.Packages.TableUtil)
+local Waiter = require(ReplicatedStorage.Packages.WaiterV6)
+
+local teleportLocations = Waiter.getChild(workspace, "TeleportLocationsFolder"):GetChildren()
+local locationNames = TableUtil.Map(teleportLocations, function(location)
+    return location.Name
+end)
+table.sort(locationNames)
+
 return function(registry)
 	registry:RegisterType(
         "teleportLocation",
         registry.Cmdr.Util.MakeEnumType(
             "TeleportLocation",
-            {
-                "CDCU Cafeteria",
-                "CDCU Viewing Area",
-                "DFU Cafeteria",
-                "Medical Department",
-                "Briefing Room A",
-                "Briefing Room B",
-                "Briefing Room C",
-                "Containment Hall",
-                "SCP-005",
-                "SCP-173",
-                "SCP-008",
-                "SCP-500",
-                "SCP-330",
-            }
+            locationNames
         )
     )
 end
