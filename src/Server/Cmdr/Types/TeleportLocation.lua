@@ -16,6 +16,7 @@ return function(registry)
                 "SCP-173",
                 "SCP-008",
                 "SCP-500",
+                "SCP-330",
             }
         )
     )
